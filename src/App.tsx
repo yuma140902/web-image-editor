@@ -7,18 +7,18 @@ import useCvMatFromFile from './hooks/useCvMatFromFile';
 import { useWindowSize } from '@react-hook/window-size';
 
 function App() {
-  const [imageCvMat, setImageCvMat, setImageFile] = useCvMatFromFile();
+  const [cvMat, setCvMat, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
   // design token: headerHeight
   // https://ant.design/docs/react/customize-theme#customize-design-token
   const headerHeight = 64;
 
   const handleGrayscale = () => {
-    if (imageCvMat) {
+    if (cvMat) {
       const imgGray = new cv.Mat();
-      cv.cvtColor(imageCvMat, imgGray, cv.COLOR_BGR2GRAY);
-      imageCvMat?.delete();
-      setImageCvMat(imgGray);
+      cv.cvtColor(cvMat, imgGray, cv.COLOR_BGR2GRAY);
+      cvMat?.delete();
+      setCvMat(imgGray);
     }
   };
 
@@ -30,11 +30,11 @@ function App() {
         </Space>
       </Header>
       <Content>
-        {!imageCvMat ? (
+        {!cvMat ? (
           <ImageSelector handleImageFile={(file) => setImageFile(file)} />
         ) : (
           <ImagePreview
-            image={imageCvMat}
+            image={cvMat}
             width={windowWidth}
             height={windowHeight - headerHeight}
           />

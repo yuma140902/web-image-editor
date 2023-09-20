@@ -13,7 +13,7 @@ export default function useCvMatFromFile(
 ] {
   const [imageFile, setImageFile] = useState<File | undefined>(file);
   const dummyImageElementRef = useRef<HTMLImageElement | null>(null);
-  const [imageCvMat, setImageCvMat] = useState<cv.Mat | undefined>(undefined);
+  const [cvMat, setCvMat] = useState<cv.Mat | undefined>(undefined);
 
   const loadImage = useCallback(() => {
     const blobUrl = imageFile
@@ -31,7 +31,7 @@ export default function useCvMatFromFile(
 
   const handleLoad = () => {
     if (dummyImageElementRef.current) {
-      setImageCvMat(cv.imread(dummyImageElementRef.current));
+      setCvMat(cv.imread(dummyImageElementRef.current));
     }
   };
 
@@ -48,5 +48,5 @@ export default function useCvMatFromFile(
     loadImage();
   }, [imageFile, loadImage]);
 
-  return [imageCvMat, setImageCvMat, setImageFile];
+  return [cvMat, setCvMat, setImageFile];
 }
