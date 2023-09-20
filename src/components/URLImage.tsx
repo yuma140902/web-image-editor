@@ -7,6 +7,9 @@ export type URLImageProps = {
   y: number;
 };
 
+/**
+ * URL (データURLも可) で指定した画像をKonvaを使ってキャンバスに表示するコンポーネント
+ */
 export default function URLImage({ src, x, y }: URLImageProps) {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
