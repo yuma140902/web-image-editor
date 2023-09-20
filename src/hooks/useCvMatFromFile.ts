@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import cv from '@techstark/opencv-js';
 
 /*
- * Fileをcv.Matに読み込むフック
+ * Fileの内容をcv.Matに読み込むフック
  */
 export default function useCvMatFromFile(
   file?: File,
 ): [
   cv.Mat | undefined,
   React.Dispatch<React.SetStateAction<cv.Mat | undefined>>,
+  File | undefined,
   React.Dispatch<React.SetStateAction<File | undefined>>,
 ] {
   const [imageFile, setImageFile] = useState<File | undefined>(file);
@@ -48,5 +49,5 @@ export default function useCvMatFromFile(
     loadImage();
   }, [imageFile, loadImage]);
 
-  return [cvMat, setCvMat, setImageFile];
+  return [cvMat, setCvMat, imageFile, setImageFile];
 }

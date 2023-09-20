@@ -9,7 +9,7 @@ import { useRef, useState } from 'react';
 import { Stage } from 'konva/lib/Stage';
 
 function App() {
-  const [cvMat, setCvMat, setImageFile] = useCvMatFromFile();
+  const [cvMat, setCvMat, imageFile, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
   const headerHeight = 64;
   // TODO: 永続化
@@ -45,7 +45,7 @@ function App() {
         pixelRatio: 1,
         mimeType: 'image/png',
       });
-      downloadURI(dataUrl, 'output.png');
+      downloadURI(dataUrl, imageFile?.name ?? 'output.png');
     }
   };
 
