@@ -44,6 +44,10 @@ function App() {
       const dataUrl = stageRef.current.toDataURL({
         pixelRatio: 1,
         mimeType: 'image/png',
+        x: 0,
+        y: 0,
+        width: cvMat?.cols,
+        height: cvMat?.rows,
       });
       downloadURI(dataUrl, imageFile?.name ?? 'output.png');
     }
