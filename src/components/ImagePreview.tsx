@@ -2,6 +2,7 @@ import { Layer, Stage } from 'react-konva';
 import { Image } from 'react-konva';
 import cv from '@techstark/opencv-js';
 import useImageBitmapFromCvMat from '../hooks/useImageBitmapFromCvMat';
+import { useWindowSize } from '@react-hook/window-size';
 
 export type ImagePreviewProps = {
   image: cv.Mat | undefined | null;
@@ -12,10 +13,11 @@ export type ImagePreviewProps = {
  */
 export default function ImagePreview({ image }: ImagePreviewProps) {
   const imageBitmap = useImageBitmapFromCvMat(image);
+  const [width, height] = useWindowSize();
 
   if (imageBitmap) {
     return (
-      <Stage width={innerWidth} height={innerHeight}>
+      <Stage width={width} height={height}>
         <Layer>
           <Image image={imageBitmap} />
         </Layer>
