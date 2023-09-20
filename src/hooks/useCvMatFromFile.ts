@@ -5,16 +5,10 @@ import cv from '@techstark/opencv-js';
  * Fileの内容をcv.Matに読み込むフック
  */
 export default function useCvMatFromFile(
-  file?: File,
-): [
-  cv.Mat | undefined,
-  React.Dispatch<React.SetStateAction<cv.Mat | undefined>>,
-  File | undefined,
-  React.Dispatch<React.SetStateAction<File | undefined>>,
-] {
-  const [imageFile, setImageFile] = useState<File | undefined>(file);
+  setCvMat: (mat: cv.Mat) => void,
+): [File | undefined, React.Dispatch<React.SetStateAction<File | undefined>>] {
+  const [imageFile, setImageFile] = useState<File | undefined>(undefined);
   const dummyImageElementRef = useRef<HTMLImageElement | null>(null);
-  const [cvMat, setCvMat] = useState<cv.Mat | undefined>(undefined);
 
   const loadImage = useCallback(() => {
     const blobUrl = imageFile
@@ -49,5 +43,5 @@ export default function useCvMatFromFile(
     loadImage();
   }, [imageFile, loadImage]);
 
-  return [cvMat, setCvMat, imageFile, setImageFile];
+  return [imageFile, setImageFile];
 }

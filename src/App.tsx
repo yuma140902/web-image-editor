@@ -9,7 +9,8 @@ import { useRef, useState } from 'react';
 import { Stage } from 'konva/lib/Stage';
 
 function App() {
-  const [cvMat, setCvMat, imageFile, setImageFile] = useCvMatFromFile();
+  const [cvMat, setCvMat] = useState<cv.Mat | undefined>(undefined);
+  const [imageFile, setImageFile] = useCvMatFromFile(setCvMat);
   const [windowWidth, windowHeight] = useWindowSize();
   const headerHeight = 64;
   // TODO: 永続化
