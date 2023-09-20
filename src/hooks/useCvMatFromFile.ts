@@ -10,6 +10,12 @@ export default function useCvMatFromFile(
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
   const dummyImageElementRef = useRef<HTMLImageElement | null>(null);
 
+  const handleLoad = useCallback(() => {
+    if (dummyImageElementRef.current) {
+      setCvMat(cv.imread(dummyImageElementRef.current));
+    }
+  }, [setCvMat]);
+
   const loadImage = useCallback(() => {
     const blobUrl = imageFile
       ? window.URL.createObjectURL(imageFile.slice())
@@ -22,13 +28,7 @@ export default function useCvMatFromFile(
       dummyImageElementRef.current = img;
       dummyImageElementRef.current.addEventListener('load', handleLoad);
     }
-  }, [imageFile]);
-
-  const handleLoad = () => {
-    if (dummyImageElementRef.current) {
-      setCvMat(cv.imread(dummyImageElementRef.current));
-    }
-  };
+  }, [imageFile, handleLoad]);
 
   useEffect(() => {
     loadImage();
@@ -37,7 +37,7 @@ export default function useCvMatFromFile(
         dummyImageElementRef.current.removeEventListener('load', handleLoad);
       }
     };
-  }, [loadImage]);
+  }, [loadImage, handleLoad]);
 
   useEffect(() => {
     loadImage();
