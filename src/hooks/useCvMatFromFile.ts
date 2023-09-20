@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import cv from '@techstark/opencv-js';
 
 /*
@@ -15,7 +15,7 @@ export default function useCvMatFromFile(
   const dummyImageElementRef = useRef<HTMLImageElement | null>(null);
   const [imageCvMat, setImageCvMat] = useState<cv.Mat | undefined>(undefined);
 
-  const loadImage = () => {
+  const loadImage = useCallback(() => {
     const blobUrl = imageFile
       ? window.URL.createObjectURL(imageFile.slice())
       : undefined;
@@ -27,7 +27,7 @@ export default function useCvMatFromFile(
       dummyImageElementRef.current = img;
       dummyImageElementRef.current.addEventListener('load', handleLoad);
     }
-  };
+  }, [imageFile]);
 
   const handleLoad = () => {
     if (dummyImageElementRef.current) {
@@ -42,11 +42,11 @@ export default function useCvMatFromFile(
         dummyImageElementRef.current.removeEventListener('load', handleLoad);
       }
     };
-  }, []);
+  }, [loadImage]);
 
   useEffect(() => {
     loadImage();
-  }, [imageFile]);
+  }, [imageFile, loadImage]);
 
   return [imageCvMat, setImageCvMat, setImageFile];
 }
