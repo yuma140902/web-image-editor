@@ -1,8 +1,7 @@
 import { RcFile } from 'antd/es/upload';
 import { useState } from 'react'
-import { Layer, Stage } from 'react-konva'
-import URLImage from './components/URLImage';
 import ImageSelector from './components/ImageSelector';
+import ImagePreview from './components/ImagePreview';
 
 function App() {
   const [imageFile, setImageFile] = useState<RcFile | null>(null);
@@ -14,13 +13,7 @@ function App() {
   }
   else {
     return (
-      <div>
-        <Stage width={window.innerWidth} height={window.innerHeight}>
-          <Layer>
-            <URLImage src={window.URL.createObjectURL(imageFile.slice())} x={0} y={0} />
-          </Layer>
-        </Stage>
-      </div >
+      <ImagePreview image={imageFile.slice()} />
     )
   }
 }

@@ -6,6 +6,9 @@ export type ImageSelectorProps = {
   handleImageFile: (imageFile: RcFile) => void
 }
 
+/**
+ * ファイル選択ダイアログまたはドラッグアンドドロップによって画像を選択するコンポーネント
+ */
 export default function ImageSelector({ handleImageFile }: ImageSelectorProps) {
   return (
     <Dragger name="file" multiple={false} maxCount={1} showUploadList={false}
