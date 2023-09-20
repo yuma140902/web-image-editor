@@ -12,7 +12,9 @@ function App() {
   const [cvMat, setCvMat, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
   const headerHeight = 64;
-  const [isDarkMode, setIsDarkMode] = useState(false); // TODO: ブラウザの設定
+  // TODO: 永続化
+  // TODO: ブラウザの設定をもとにデフォルト値を決める
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const stageRef = useRef<Stage | null>(null);
 
   const handleGrayscale = () => {
