@@ -16,6 +16,7 @@ export default function ImageSelector({ handleImageFile }: ImageSelectorProps) {
       multiple={false}
       maxCount={1}
       showUploadList={false}
+      style={{ height: '100vh' }}
       beforeUpload={(file) => {
         handleImageFile(file);
         return false;
