@@ -2,7 +2,7 @@ import { Layer, Stage } from 'react-konva';
 import { Image } from 'react-konva';
 import useImageBitmapFromCvMat from '../hooks/useImageBitmapFromCvMat';
 import { Project } from '../core/Project';
-import { FloatButton } from 'antd';
+import { FloatButton, Tooltip } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Konva from 'konva';
@@ -37,8 +37,9 @@ export default function ImagePreview({
     setScale(scale - 0.1);
   };
 
-  const handleZoomReset = () => {
+  const handleViewReset = () => {
     setScale(1.0);
+    setOffset({ x: 0.0, y: 0.0 });
   };
 
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
@@ -86,9 +87,19 @@ export default function ImagePreview({
           </Layer>
         </Stage>
         <FloatButton.Group shape="square" style={{ right: 24 }}>
-          <FloatButton icon={<PlusOutlined />} onClick={handleZoomIn} />
-          <FloatButton icon={<MinusOutlined />} onClick={handleZoomOut} />
-          <FloatButton description="1:1" onClick={handleZoomReset} />
+          <Tooltip title="ズームイン" placement="left">
+            <FloatButton icon={<PlusOutlined />} onClick={handleZoomIn} />
+          </Tooltip>
+          <Tooltip title="ズームアウト" placement="left">
+            <FloatButton icon={<MinusOutlined />} onClick={handleZoomOut} />
+          </Tooltip>
+          <Tooltip title="ビューをリセット" placement="left">
+            <FloatButton
+              shape="square"
+              description="1:1"
+              onClick={handleViewReset}
+            />
+          </Tooltip>
         </FloatButton.Group>
       </>
     );
