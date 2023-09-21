@@ -55,6 +55,7 @@ function App() {
       const imgGray = new cv.Mat();
       cv.cvtColor(project.mat, imgGray, cv.COLOR_BGR2GRAY);
       project.mat.delete();
+      project.mat = undefined;
       setProject({ ...project, mat: imgGray });
     }
   };
@@ -80,7 +81,6 @@ function App() {
   };
 
   useEffect(() => {
-    // TODO: cv.Mat#delete()
     if (openBinarizationDrawer) {
       setProject((p) => {
         if (p.mat) {
@@ -92,6 +92,8 @@ function App() {
             255,
             cv.THRESH_BINARY,
           );
+          p.previewMat?.delete();
+          p.previewMat = undefined;
           return { ...p, previewMat: dst };
         }
         return p;
@@ -105,6 +107,8 @@ function App() {
         if (p.mat) {
           const dst = new cv.Mat();
           cv.Canny(p.mat, dst, cannyThreshold1, cannyThreshold2);
+          p.previewMat?.delete();
+          p.previewMat = undefined;
           return { ...p, previewMat: dst };
         }
         return p;
@@ -115,6 +119,7 @@ function App() {
   const disposePreview = () => {
     setProject((p) => {
       p.previewMat?.delete();
+      p.previewMat = undefined;
       return { ...p, previewMat: undefined };
     });
   };
@@ -142,7 +147,9 @@ function App() {
 
   const handleClose = () => {
     project.mat?.delete();
+    project.mat = undefined;
     project.previewMat?.delete();
+    project.previewMat = undefined;
     setProject({});
   };
 
