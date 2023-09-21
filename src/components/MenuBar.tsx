@@ -1,3 +1,4 @@
+import { DeleteOutlined, SaveOutlined } from '@ant-design/icons';
 import { Menu, MenuProps } from 'antd';
 
 export type MenuBarProps = {
@@ -41,11 +42,13 @@ export default function MenuBar({
         {
           label: '保存',
           key: 'save',
+          icon: <SaveOutlined />,
           disabled: !projectIsOpened,
         },
         {
           label: '閉じる',
           key: 'close',
+          icon: <DeleteOutlined />,
           danger: true,
           disabled: !projectIsOpened,
         },
