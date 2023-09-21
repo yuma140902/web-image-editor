@@ -4,17 +4,20 @@ import cv from '@techstark/opencv-js';
 /*
  * Fileの内容をcv.Matに読み込むフック
  */
-export default function useCvMatFromFile(
-  setCvMat: (mat: cv.Mat) => void,
-): [File | undefined, React.Dispatch<React.SetStateAction<File | undefined>>] {
+export default function useCvMatFromFile(): [
+  cv.Mat | undefined,
+  File | undefined,
+  React.Dispatch<React.SetStateAction<File | undefined>>,
+] {
+  const [mat, setMat] = useState<cv.Mat | undefined>(undefined);
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
-  const dummyImageElementRef = useRef<HTMLImageElement | null>(null);
+  const dummyImageRef = useRef<HTMLImageElement | null>(null);
 
   const handleLoad = useCallback(() => {
-    if (dummyImageElementRef.current) {
-      setCvMat(cv.imread(dummyImageElementRef.current));
+    if (dummyImageRef.current) {
+      setMat(cv.imread(dummyImageRef.current));
     }
-  }, [setCvMat]);
+  }, [setMat]);
 
   const loadImage = useCallback(() => {
     const blobUrl = imageFile
@@ -25,16 +28,16 @@ export default function useCvMatFromFile(
       const img = new window.Image();
       img.src = blobUrl;
       img.crossOrigin = 'Anonymous';
-      dummyImageElementRef.current = img;
-      dummyImageElementRef.current.addEventListener('load', handleLoad);
+      dummyImageRef.current = img;
+      dummyImageRef.current.addEventListener('load', handleLoad);
     }
   }, [imageFile, handleLoad]);
 
   useEffect(() => {
     loadImage();
     return () => {
-      if (dummyImageElementRef.current) {
-        dummyImageElementRef.current.removeEventListener('load', handleLoad);
+      if (dummyImageRef.current) {
+        dummyImageRef.current.removeEventListener('load', handleLoad);
       }
     };
   }, [loadImage, handleLoad]);
@@ -43,5 +46,22 @@ export default function useCvMatFromFile(
     loadImage();
   }, [imageFile, loadImage]);
 
-  return [imageFile, setImageFile];
+  useEffect(
+    () => console.log('useCvMatFromFile/imageFile has changed', imageFile),
+    [imageFile],
+  );
+  useEffect(
+    () => console.log('useCvMatFromFile/setMat has changed', setMat),
+    [setMat],
+  );
+  useEffect(
+    () => console.log('useCvMatFromFile/handleLoad has changed', handleLoad),
+    [handleLoad],
+  );
+  useEffect(
+    () => console.log('useCvMatFromFile/loadImage has changed', loadImage),
+    [loadImage],
+  );
+
+  return [mat, imageFile, setImageFile];
 }

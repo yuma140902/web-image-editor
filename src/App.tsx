@@ -5,12 +5,13 @@ import { Content, Header } from 'antd/es/layout/layout';
 import cv from '@techstark/opencv-js';
 import useCvMatFromFile from './hooks/useCvMatFromFile';
 import { useWindowSize } from '@react-hook/window-size';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Stage } from 'konva/lib/Stage';
+import { Project } from './core/Project';
 
 function App() {
-  const [cvMat, setCvMat] = useState<cv.Mat | undefined>(undefined);
-  const [imageFile, setImageFile] = useCvMatFromFile(setCvMat);
+  const [project, setProject] = useState<Project>({});
+  const [mat, imageFile, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
   const headerHeight = 64;
   // TODO: 永続化
@@ -18,12 +19,29 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const stageRef = useRef<Stage | null>(null);
 
+  useEffect(() => setProject((p) => ({ ...p, mat: mat })), [mat]);
+
+  useEffect(() => console.log('project has changed', project), [project]);
+  useEffect(() => console.log('imageFile has changed', imageFile), [imageFile]);
+  useEffect(
+    () => console.log('windowWidth has changed', windowWidth),
+    [windowWidth],
+  );
+  useEffect(
+    () => console.log('windowHeight has changed', windowHeight),
+    [windowHeight],
+  );
+  useEffect(
+    () => console.log('isDarkMode has changed', isDarkMode),
+    [isDarkMode],
+  );
+
   const handleGrayscale = () => {
-    if (cvMat) {
+    if (project.mat) {
       const imgGray = new cv.Mat();
-      cv.cvtColor(cvMat, imgGray, cv.COLOR_BGR2GRAY);
-      cvMat?.delete();
-      setCvMat(imgGray);
+      cv.cvtColor(project.mat, imgGray, cv.COLOR_BGR2GRAY);
+      project.mat?.delete();
+      setProject({ ...project, mat: imgGray });
     }
   };
 
@@ -47,8 +65,8 @@ function App() {
         mimeType: 'image/png',
         x: 0,
         y: 0,
-        width: cvMat?.cols,
-        height: cvMat?.rows,
+        width: project.mat?.cols,
+        height: project.mat?.rows,
       });
       downloadURI(dataUrl, imageFile?.name ?? 'output.png');
     }
@@ -81,13 +99,13 @@ function App() {
           </Space>
         </Header>
         <Content>
-          {!cvMat ? (
+          {!project.mat ? (
             <div style={{ padding: '2rem', height: '100%' }}>
               <ImageSelector handleImageFile={(file) => setImageFile(file)} />
             </div>
           ) : (
             <ImagePreview
-              image={cvMat}
+              image={project.mat}
               width={windowWidth}
               height={windowHeight - headerHeight}
               stageRef={stageRef}
