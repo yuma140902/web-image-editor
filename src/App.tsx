@@ -8,6 +8,7 @@ import {
   Slider,
   Space,
   Switch,
+  Tooltip,
   Typography,
   theme,
 } from 'antd';
@@ -18,6 +19,9 @@ import { useWindowSize } from '@react-hook/window-size';
 import { useEffect, useState } from 'react';
 import { Project, renderProject } from './core/Project';
 import MenuBar from './components/MenuBar';
+import appIcon from './icon.png';
+import githubLightIcon from './github-mark.svg';
+import githubDarkIcon from './github-mark-white.svg';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -161,11 +165,24 @@ function App() {
             ...{
               width: '100%',
               display: 'flex',
+              paddingLeft: '0',
+              paddingRight: '3px',
             },
             // https://github.com/ant-design/ant-design/issues/25048
             ...(isDarkMode ? {} : { background: colorBgContainer }),
           }}
         >
+          <img
+            src={appIcon}
+            height={headerHeight}
+            style={{
+              marginLeft: '10px',
+              marginRight: '10px',
+            }}
+          />
+          <Space>
+            <Typography.Text strong>Web Image Editor</Typography.Text>
+          </Space>
           <MenuBar
             projectIsOpened={projectIsOpened()}
             isDarkMode={isDarkMode}
@@ -183,6 +200,26 @@ function App() {
               onChange={(checked) => setIsDarkMode(checked)}
             />
           </Space>
+          <Tooltip title="View on GitHub">
+            <a
+              href="https://github.com/yuma140902/web-image-editor"
+              target="_blank"
+            >
+              <div
+                style={{
+                  height: '64px',
+                  marginLeft: '10px',
+                  marginRight: '10px',
+                }}
+              >
+                <img
+                  src={isDarkMode ? githubDarkIcon : githubLightIcon}
+                  height={28}
+                  style={{ verticalAlign: 'middle' }}
+                />
+              </div>
+            </a>
+          </Tooltip>
         </Header>
         <Content>
           {!projectIsOpened() ? (
