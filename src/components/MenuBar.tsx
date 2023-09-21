@@ -6,6 +6,7 @@ export type MenuBarProps = {
   handleSave: () => Promise<void>;
   handleClose: () => void;
   handleGrayscale: () => void;
+  handleBinarization: () => void;
 };
 
 export default function MenuBar({
@@ -14,14 +15,17 @@ export default function MenuBar({
   handleSave,
   handleClose,
   handleGrayscale,
+  handleBinarization,
 }: MenuBarProps) {
   const handleMenuClick = async ({ key }: { key: string }) => {
     if (key === 'save') {
       await handleSave();
-    } else if (key === 'grayscale') {
-      handleGrayscale();
     } else if (key === 'close') {
       handleClose();
+    } else if (key === 'grayscale') {
+      handleGrayscale();
+    } else if (key === 'binarization') {
+      handleBinarization();
     }
   };
 
@@ -50,6 +54,11 @@ export default function MenuBar({
         {
           label: 'グレースケール',
           key: 'grayscale',
+          disabled: !projectIsOpened,
+        },
+        {
+          label: '二値化',
+          key: 'binarization',
           disabled: !projectIsOpened,
         },
       ],

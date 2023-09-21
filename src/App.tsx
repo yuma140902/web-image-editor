@@ -30,8 +30,17 @@ function App() {
     if (project.mat) {
       const imgGray = new cv.Mat();
       cv.cvtColor(project.mat, imgGray, cv.COLOR_BGR2GRAY);
-      project.mat?.delete();
+      project.mat.delete();
       setProject({ ...project, mat: imgGray });
+    }
+  };
+
+  const handleBinarization = () => {
+    if (project.mat) {
+      const newMat = new cv.Mat();
+      cv.threshold(project.mat, newMat, 100, 255, cv.THRESH_BINARY);
+      project.mat.delete();
+      setProject({ ...project, mat: newMat });
     }
   };
 
@@ -93,6 +102,7 @@ function App() {
             handleSave={handleSave}
             handleClose={handleClose}
             handleGrayscale={handleGrayscale}
+            handleBinarization={handleBinarization}
           />
           <Space style={{ float: 'right', marginLeft: 'auto' }}>
             <Switch
