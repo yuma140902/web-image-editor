@@ -15,13 +15,7 @@ export default function MenuBar({
   handleClose,
   handleGrayscale,
 }: MenuBarProps) {
-  const handleMenuClick = async ({
-    key,
-    keyPath,
-  }: {
-    key: string;
-    keyPath: string[];
-  }) => {
+  const handleMenuClick = async ({ key }: { key: string }) => {
     if (key === 'save') {
       await handleSave();
     } else if (key === 'grayscale') {
