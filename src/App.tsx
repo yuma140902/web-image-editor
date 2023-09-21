@@ -1,12 +1,21 @@
 import ImageSelector from './components/ImageSelector';
 import ImagePreview from './components/ImagePreview';
-import { Button, ConfigProvider, Layout, Space, Switch, theme } from 'antd';
+import {
+  Button,
+  ConfigProvider,
+  FloatButton,
+  Layout,
+  Space,
+  Switch,
+  theme,
+} from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import cv from '@techstark/opencv-js';
 import useCvMatFromFile from './hooks/useCvMatFromFile';
 import { useWindowSize } from '@react-hook/window-size';
 import { useEffect, useState } from 'react';
 import { Project, renderProject } from './core/Project';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -92,6 +101,11 @@ function App() {
           )}
         </Content>
       </Layout>
+      <FloatButton.Group shape="square" style={{ right: 24 }}>
+        <FloatButton icon={<PlusOutlined />} />
+        <FloatButton icon={<MinusOutlined />} />
+        <FloatButton description="1:1" />
+      </FloatButton.Group>
     </ConfigProvider>
   );
 }
