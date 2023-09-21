@@ -48,8 +48,8 @@ export default function MenuBar({
       ],
     },
     {
-      label: 'フィルター',
-      key: 'filter',
+      label: '編集',
+      key: 'edit',
       children: [
         {
           label: 'グレースケール',
