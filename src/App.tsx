@@ -105,7 +105,7 @@ function App() {
             </div>
           ) : (
             <ImagePreview
-              image={project.mat}
+              project={project}
               width={windowWidth}
               height={windowHeight - headerHeight}
               stageRef={stageRef}
