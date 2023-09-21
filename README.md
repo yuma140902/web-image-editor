@@ -1,4 +1,6 @@
-# Image Editor
+# Web Image Editor
+
+[![Deploy static content to Pages](https://github.com/yuma140902/web-image-editor/actions/workflows/deploy.yml/badge.svg)](https://github.com/yuma140902/web-image-editor/actions/workflows/deploy.yml)
 
 ブラウザ上で動作する画像エディタです。
 
