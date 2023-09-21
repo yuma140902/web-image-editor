@@ -26,9 +26,8 @@ export default function ImageSelector({ handleImageFile }: ImageSelectorProps) {
         <FileImageOutlined />
       </p>
       <p className="ant-upload-text">
-        クリックまたはここへドラッグして画像を選択
+        クリックまたはここへドラッグして画像を開く
       </p>
-      <p className="ant-upload-hint">aiueo</p>
     </Dragger>
   );
 }
