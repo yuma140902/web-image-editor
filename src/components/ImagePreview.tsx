@@ -49,8 +49,7 @@ export default function ImagePreview({
     setLastMousePos({ x: posX, y: posY });
   };
 
-  //TODO: 警告をなくす
-  const handleMouseUp = (_e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handleMouseUp = () => {
     setIsDragging(false);
   };
 
