@@ -66,6 +66,11 @@ function App() {
     downloadURI(dataUrl, imageFile?.name ?? 'output.png');
   };
 
+  const handleClose = () => {
+    project.mat?.delete();
+    setProject({});
+  };
+
   const projectIsOpened = (): boolean => !!project.mat;
 
   return (
@@ -93,8 +98,9 @@ function App() {
           <MenuBar
             projectIsOpened={projectIsOpened()}
             isDarkMode={isDarkMode}
-            handleGrayscale={handleGrayscale}
             handleSave={handleSave}
+            handleClose={handleClose}
+            handleGrayscale={handleGrayscale}
           />
           <Space style={{ float: 'right', marginLeft: 'auto' }}>
             <Switch

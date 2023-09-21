@@ -3,15 +3,17 @@ import { Menu, MenuProps } from 'antd';
 export type MenuBarProps = {
   projectIsOpened: boolean;
   isDarkMode: boolean;
-  handleGrayscale: () => void;
   handleSave: () => Promise<void>;
+  handleClose: () => void;
+  handleGrayscale: () => void;
 };
 
 export default function MenuBar({
   projectIsOpened,
   isDarkMode,
-  handleGrayscale,
   handleSave,
+  handleClose,
+  handleGrayscale,
 }: MenuBarProps) {
   const handleMenuClick = async ({
     key,
@@ -24,6 +26,8 @@ export default function MenuBar({
       await handleSave();
     } else if (key === 'grayscale') {
       handleGrayscale();
+    } else if (key === 'close') {
+      handleClose();
     }
   };
 
