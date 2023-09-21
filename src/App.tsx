@@ -89,6 +89,7 @@ function App() {
               project={project}
               width={windowWidth}
               height={windowHeight - headerHeight}
+              isDarkMode={isDarkMode}
               stageRef={stageRef}
             />
           )}

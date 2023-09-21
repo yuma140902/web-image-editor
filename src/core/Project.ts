@@ -6,13 +6,13 @@ export type Project = {
   mat?: cv.Mat;
 };
 
+/**
+ * ProjectをKonvaのStageに描画する
+ *
+ * そのあとKonva.Stage#toDataURL()などを使えば画像として保存できる
+ */
 export async function renderProject(project: Project): Promise<Konva.Stage> {
-  let dummyDiv = document.getElementById(
-    'renderProject_dummyDiv',
-  ) as HTMLDivElement;
-  if (!dummyDiv) {
-    dummyDiv = document.createElement('div') as HTMLDivElement;
-  }
+  const dummyDiv = document.createElement('div') as HTMLDivElement;
 
   const stage = new Konva.Stage({
     container: dummyDiv,

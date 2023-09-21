@@ -9,6 +9,7 @@ export type ImagePreviewProps = {
   project: Project;
   width: number;
   height: number;
+  isDarkMode: boolean;
   stageRef: React.RefObject<Konva.Stage>;
 };
 
@@ -19,13 +20,19 @@ export default function ImagePreview({
   project,
   width,
   height,
+  isDarkMode,
   stageRef,
 }: ImagePreviewProps) {
   const imageBitmap = useImageBitmapFromCvMat(project.mat);
 
   if (imageBitmap) {
     return (
-      <Stage width={width} height={height} ref={stageRef}>
+      <Stage
+        width={width}
+        height={height}
+        ref={stageRef}
+        className={`checker ${isDarkMode ? 'dark' : 'light'}`}
+      >
         <Layer>
           <Image image={imageBitmap} />
         </Layer>
