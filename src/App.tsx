@@ -5,8 +5,7 @@ import { Content, Header } from 'antd/es/layout/layout';
 import cv from '@techstark/opencv-js';
 import useCvMatFromFile from './hooks/useCvMatFromFile';
 import { useWindowSize } from '@react-hook/window-size';
-import { useEffect, useRef, useState } from 'react';
-import { Stage } from 'konva/lib/Stage';
+import { useEffect, useState } from 'react';
 import { Project, renderProject } from './core/Project';
 
 function App() {
@@ -17,7 +16,6 @@ function App() {
   // TODO: 永続化
   // TODO: ブラウザの設定をもとにデフォルト値を決める
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const stageRef = useRef<Stage | null>(null);
 
   useEffect(() => setProject((p) => ({ ...p, mat: mat })), [mat]);
 
@@ -90,7 +88,6 @@ function App() {
               width={windowWidth}
               height={windowHeight - headerHeight}
               isDarkMode={isDarkMode}
-              stageRef={stageRef}
             />
           )}
         </Content>
