@@ -26,7 +26,7 @@ export default function ImagePreview({
   const imageBitmap = useImageBitmapFromCvMat(project.mat);
   const [scale, setScale] = useState(1.0);
   const [isDragging, setIsDragging] = useState(false);
-  const lastMousePos = useRef({ x: 0.0, y: 0.0 }); // TODO: useStateを試す
+  const [lastMousePos, setLastMousePos] = useState({ x: 0.0, y: 0.0 });
   const [xOffset, setXOffset] = useState(0.0);
   const [yOffset, setYOffset] = useState(0.0);
 
@@ -46,8 +46,7 @@ export default function ImagePreview({
     setIsDragging(true);
     const posX = e.evt.pageX;
     const posY = e.evt.pageY;
-    lastMousePos.current.x = posX;
-    lastMousePos.current.y = posY;
+    setLastMousePos({ x: posX, y: posY });
   };
 
   //TODO: 警告をなくす
@@ -59,12 +58,11 @@ export default function ImagePreview({
     if (isDragging) {
       const posX = e.evt.pageX;
       const posY = e.evt.pageY;
-      const dx = posX - lastMousePos.current.x;
-      const dy = posY - lastMousePos.current.y;
+      const dx = posX - lastMousePos.x;
+      const dy = posY - lastMousePos.y;
       setXOffset(xOffset + dx);
       setYOffset(yOffset + dy);
-      lastMousePos.current.x = posX;
-      lastMousePos.current.y = posY;
+      setLastMousePos({ x: posX, y: posY });
     }
   };
 
