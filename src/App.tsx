@@ -15,6 +15,7 @@ import useCvMatFromFile from './hooks/useCvMatFromFile';
 import { useWindowSize } from '@react-hook/window-size';
 import { useEffect, useState } from 'react';
 import { Project, renderProject } from './core/Project';
+import MenuBar from './components/MenuBar';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -67,54 +68,6 @@ function App() {
 
   const projectIsOpened = (): boolean => !!project.mat;
 
-  const handleMenuClick = async ({
-    key,
-    keyPath,
-  }: {
-    key: string;
-    keyPath: string[];
-  }) => {
-    if (key === 'save') {
-      await handleSave();
-    } else if (key === 'grayscale') {
-      handleGrayscale();
-    }
-  };
-
-  const menuItems: MenuProps['items'] = [
-    {
-      label: 'ファイル',
-      key: 'file',
-      children: [
-        {
-          label: '開く',
-          key: 'open',
-          disabled: true,
-        },
-        {
-          label: '保存',
-          key: 'save',
-        },
-        {
-          label: '閉じる',
-          key: 'close',
-          danger: true,
-          disabled: true,
-        },
-      ],
-    },
-    {
-      label: 'フィルター',
-      key: 'filter',
-      children: [
-        {
-          label: 'グレースケール',
-          key: 'grayscale',
-        },
-      ],
-    },
-  ];
-
   return (
     <ConfigProvider
       theme={{
@@ -137,12 +90,11 @@ function App() {
             ...(isDarkMode ? {} : { background: colorBgContainer }),
           }}
         >
-          <Menu
-            items={menuItems}
-            mode="horizontal"
-            selectable={false}
-            theme={isDarkMode ? 'dark' : 'light'}
-            onClick={handleMenuClick}
+          <MenuBar
+            projectIsOpened={projectIsOpened()}
+            isDarkMode={isDarkMode}
+            handleGrayscale={handleGrayscale}
+            handleSave={handleSave}
           />
           <Space style={{ float: 'right', marginLeft: 'auto' }}>
             <Switch
