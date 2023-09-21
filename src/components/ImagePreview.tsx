@@ -4,7 +4,7 @@ import useImageBitmapFromCvMat from '../hooks/useImageBitmapFromCvMat';
 import { Project } from '../core/Project';
 import { FloatButton } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Konva from 'konva';
 
 export type ImagePreviewProps = {
@@ -27,8 +27,7 @@ export default function ImagePreview({
   const [scale, setScale] = useState(1.0);
   const [isDragging, setIsDragging] = useState(false);
   const [lastMousePos, setLastMousePos] = useState({ x: 0.0, y: 0.0 });
-  const [xOffset, setXOffset] = useState(0.0);
-  const [yOffset, setYOffset] = useState(0.0);
+  const [offset, setOffset] = useState({ x: 0.0, y: 0.0 });
 
   const handleZoomIn = () => {
     setScale(scale + 0.1);
@@ -60,8 +59,7 @@ export default function ImagePreview({
       const posY = e.evt.pageY;
       const dx = posX - lastMousePos.x;
       const dy = posY - lastMousePos.y;
-      setXOffset(xOffset + dx);
-      setYOffset(yOffset + dy);
+      setOffset({ x: offset.x + dx, y: offset.y + dy });
       setLastMousePos({ x: posX, y: posY });
     }
   };
@@ -82,8 +80,8 @@ export default function ImagePreview({
               image={imageBitmap}
               scaleX={scale}
               scaleY={scale}
-              x={width / 2 - (imageBitmap.width * scale) / 2 + xOffset}
-              y={height / 2 - (imageBitmap.height * scale) / 2 + yOffset}
+              x={width / 2 - (imageBitmap.width * scale) / 2 + offset.x}
+              y={height / 2 - (imageBitmap.height * scale) / 2 + offset.y}
             />
           </Layer>
         </Stage>
