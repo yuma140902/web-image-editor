@@ -46,7 +46,13 @@ export default function ImagePreview({
           className={`checker ${isDarkMode ? 'dark' : 'light'}`}
         >
           <Layer>
-            <Image image={imageBitmap} scaleX={scale} scaleY={scale} />
+            <Image
+              image={imageBitmap}
+              scaleX={scale}
+              scaleY={scale}
+              x={width / 2 - (imageBitmap.width * scale) / 2}
+              y={height / 2 - (imageBitmap.height * scale) / 2}
+            />
           </Layer>
         </Stage>
         <FloatButton.Group shape="square" style={{ right: 24 }}>
