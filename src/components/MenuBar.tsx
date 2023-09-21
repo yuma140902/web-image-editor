@@ -31,10 +31,6 @@ export default function MenuBar({
       key: 'file',
       children: [
         {
-          label: '開く',
-          key: 'open',
-        },
-        {
           label: '保存',
           key: 'save',
           disabled: !projectIsOpened,

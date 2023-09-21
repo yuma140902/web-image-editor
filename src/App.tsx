@@ -1,14 +1,6 @@
 import ImageSelector from './components/ImageSelector';
 import ImagePreview from './components/ImagePreview';
-import {
-  ConfigProvider,
-  Layout,
-  Menu,
-  MenuProps,
-  Space,
-  Switch,
-  theme,
-} from 'antd';
+import { ConfigProvider, Layout, Space, Switch, theme } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import cv from '@techstark/opencv-js';
 import useCvMatFromFile from './hooks/useCvMatFromFile';
