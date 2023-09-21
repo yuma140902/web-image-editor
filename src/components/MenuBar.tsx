@@ -7,6 +7,7 @@ export type MenuBarProps = {
   handleClose: () => void;
   handleGrayscale: () => void;
   handleBinarization: () => void;
+  handleCanny: () => void;
 };
 
 export default function MenuBar({
@@ -16,6 +17,7 @@ export default function MenuBar({
   handleClose,
   handleGrayscale,
   handleBinarization,
+  handleCanny,
 }: MenuBarProps) {
   const handleMenuClick = async ({ key }: { key: string }) => {
     if (key === 'save') {
@@ -26,6 +28,8 @@ export default function MenuBar({
       handleGrayscale();
     } else if (key === 'binarization') {
       handleBinarization();
+    } else if (key === 'canny') {
+      handleCanny();
     }
   };
 
@@ -59,6 +63,11 @@ export default function MenuBar({
         {
           label: '二値化',
           key: 'binarization',
+          disabled: !projectIsOpened,
+        },
+        {
+          label: 'エッジ検出 (Canny法)',
+          key: 'canny',
           disabled: !projectIsOpened,
         },
       ],

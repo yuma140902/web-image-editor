@@ -31,6 +31,10 @@ function App() {
   const [openBinarizationDrawer, setOpenBinarizationDrawer] = useState(false);
   const [binarizationThreshold, setBinarizationThreshold] = useState(100);
 
+  const [openCannyDrawer, setOpenCannyDrawer] = useState(false);
+  const [cannyThreshold1, setCannyThreshold1] = useState(100);
+  const [cannyThreshold2, setCannyThreshold2] = useState(200);
+
   // Headerをライトテーマにするために必要
   // https://github.com/ant-design/ant-design/issues/25048
   const {
@@ -56,6 +60,11 @@ function App() {
     return;
   };
 
+  const handleCanny = () => {
+    setOpenCannyDrawer(!openCannyDrawer);
+    return;
+  };
+
   // https://konvajs.org/docs/data_and_serialization/High-Quality-Export.html
   const downloadURI = (uri: string, filename: string) => {
     const link = document.createElement('a');
@@ -67,7 +76,7 @@ function App() {
   };
 
   useEffect(() => {
-    // TODO: プレビュー用のMatを書き換える
+    // TODO: cv.Mat#delete()
     if (openBinarizationDrawer) {
       setProject((p) => {
         if (p.mat) {
@@ -85,6 +94,19 @@ function App() {
       });
     }
   }, [binarizationThreshold, openBinarizationDrawer]);
+
+  useEffect(() => {
+    if (openCannyDrawer) {
+      setProject((p) => {
+        if (p.mat) {
+          const dst = new cv.Mat();
+          cv.Canny(p.mat, dst, cannyThreshold1, cannyThreshold2);
+          return { ...p, previewMat: dst };
+        }
+        return p;
+      });
+    }
+  }, [cannyThreshold1, cannyThreshold2, openCannyDrawer]);
 
   const disposePreview = () => {
     setProject((p) => {
@@ -151,6 +173,7 @@ function App() {
             handleClose={handleClose}
             handleGrayscale={handleGrayscale}
             handleBinarization={handleBinarization}
+            handleCanny={handleCanny}
           />
           <Space style={{ float: 'right', marginLeft: 'auto' }}>
             <Switch
@@ -213,6 +236,54 @@ function App() {
           max={255}
           onChange={(num) => {
             setBinarizationThreshold(num);
+          }}
+        />
+      </Drawer>
+      <Drawer
+        title="エッジ検出 (Canny法)"
+        open={openCannyDrawer}
+        onClose={() => {
+          disposePreview();
+          setOpenCannyDrawer(false);
+        }}
+        placement="right"
+        extra={
+          <Space>
+            <Button
+              onClick={() => {
+                disposePreview();
+                setOpenCannyDrawer(false);
+              }}
+            >
+              キャンセル
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                applyPreview();
+                setOpenCannyDrawer(false);
+              }}
+            >
+              適用
+            </Button>
+          </Space>
+        }
+        maskStyle={{ background: 'transparent' }}
+      >
+        <Typography>閾値1:</Typography>
+        <Slider
+          defaultValue={cannyThreshold1}
+          max={255}
+          onChange={(num) => {
+            setCannyThreshold1(num);
+          }}
+        />
+        <Typography>閾値2:</Typography>
+        <Slider
+          defaultValue={cannyThreshold2}
+          max={255}
+          onChange={(num) => {
+            setCannyThreshold2(num);
           }}
         />
       </Drawer>
