@@ -1,6 +1,14 @@
 import ImageSelector from './components/ImageSelector';
 import ImagePreview from './components/ImagePreview';
-import { Button, ConfigProvider, Layout, Space, Switch, theme } from 'antd';
+import {
+  ConfigProvider,
+  Layout,
+  Menu,
+  MenuProps,
+  Space,
+  Switch,
+  theme,
+} from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import cv from '@techstark/opencv-js';
 import useCvMatFromFile from './hooks/useCvMatFromFile';
@@ -16,6 +24,12 @@ function App() {
   // TODO: 永続化
   // TODO: ブラウザの設定をもとにデフォルト値を決める
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Headerをライトテーマにするために必要
+  // https://github.com/ant-design/ant-design/issues/25048
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
 
   useEffect(() => setProject((p) => ({ ...p, mat: mat })), [mat]);
 
@@ -51,6 +65,56 @@ function App() {
     downloadURI(dataUrl, imageFile?.name ?? 'output.png');
   };
 
+  const projectIsOpened = (): boolean => !!project.mat;
+
+  const handleMenuClick = async ({
+    key,
+    keyPath,
+  }: {
+    key: string;
+    keyPath: string[];
+  }) => {
+    if (key === 'save') {
+      await handleSave();
+    } else if (key === 'grayscale') {
+      handleGrayscale();
+    }
+  };
+
+  const menuItems: MenuProps['items'] = [
+    {
+      label: 'ファイル',
+      key: 'file',
+      children: [
+        {
+          label: '開く',
+          key: 'open',
+          disabled: true,
+        },
+        {
+          label: '保存',
+          key: 'save',
+        },
+        {
+          label: '閉じる',
+          key: 'close',
+          danger: true,
+          disabled: true,
+        },
+      ],
+    },
+    {
+      label: 'フィルター',
+      key: 'filter',
+      children: [
+        {
+          label: 'グレースケール',
+          key: 'grayscale',
+        },
+      ],
+    },
+  ];
+
   return (
     <ConfigProvider
       theme={{
@@ -63,11 +127,23 @@ function App() {
       }}
     >
       <Layout style={{ height: '100%' }}>
-        <Header style={{ width: '100%', display: 'flex' }}>
-          <Space>
-            <Button onClick={handleSave}>保存</Button>
-            <Button onClick={handleGrayscale}>グレースケール</Button>
-          </Space>
+        <Header
+          style={{
+            ...{
+              width: '100%',
+              display: 'flex',
+            },
+            // https://github.com/ant-design/ant-design/issues/25048
+            ...(isDarkMode ? {} : { background: colorBgContainer }),
+          }}
+        >
+          <Menu
+            items={menuItems}
+            mode="horizontal"
+            selectable={false}
+            theme={isDarkMode ? 'dark' : 'light'}
+            onClick={handleMenuClick}
+          />
           <Space style={{ float: 'right', marginLeft: 'auto' }}>
             <Switch
               checkedChildren="Dark"
@@ -78,7 +154,7 @@ function App() {
           </Space>
         </Header>
         <Content>
-          {!project.mat ? (
+          {!projectIsOpened() ? (
             <div style={{ padding: '2rem', height: '100%' }}>
               <ImageSelector handleImageFile={(file) => setImageFile(file)} />
             </div>
