@@ -46,22 +46,5 @@ export default function useCvMatFromFile(): [
     loadImage();
   }, [imageFile, loadImage]);
 
-  useEffect(
-    () => console.log('useCvMatFromFile/imageFile has changed', imageFile),
-    [imageFile],
-  );
-  useEffect(
-    () => console.log('useCvMatFromFile/setMat has changed', setMat),
-    [setMat],
-  );
-  useEffect(
-    () => console.log('useCvMatFromFile/handleLoad has changed', handleLoad),
-    [handleLoad],
-  );
-  useEffect(
-    () => console.log('useCvMatFromFile/loadImage has changed', loadImage),
-    [loadImage],
-  );
-
   return [mat, imageFile, setImageFile];
 }

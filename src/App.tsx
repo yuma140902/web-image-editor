@@ -21,21 +21,6 @@ function App() {
 
   useEffect(() => setProject((p) => ({ ...p, mat: mat })), [mat]);
 
-  useEffect(() => console.log('project has changed', project), [project]);
-  useEffect(() => console.log('imageFile has changed', imageFile), [imageFile]);
-  useEffect(
-    () => console.log('windowWidth has changed', windowWidth),
-    [windowWidth],
-  );
-  useEffect(
-    () => console.log('windowHeight has changed', windowHeight),
-    [windowHeight],
-  );
-  useEffect(
-    () => console.log('isDarkMode has changed', isDarkMode),
-    [isDarkMode],
-  );
-
   const handleGrayscale = () => {
     if (project.mat) {
       const imgGray = new cv.Mat();
