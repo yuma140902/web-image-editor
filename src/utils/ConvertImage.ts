@@ -4,6 +4,7 @@ import cv from '@techstark/opencv-js';
  * OpenCVのMatをImageBitmapに変換する
  */
 export async function CvMatToImageBitmap(mat: cv.Mat): Promise<ImageBitmap> {
+  console.log('conv');
   const imageData = CvMatToImageData(mat);
   return await createImageBitmap(imageData);
 }

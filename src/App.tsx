@@ -1,6 +1,16 @@
 import ImageSelector from './components/ImageSelector';
 import ImagePreview from './components/ImagePreview';
-import { ConfigProvider, Layout, Space, Switch, theme } from 'antd';
+import {
+  Button,
+  ConfigProvider,
+  Drawer,
+  Layout,
+  Slider,
+  Space,
+  Switch,
+  Typography,
+  theme,
+} from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import cv from '@techstark/opencv-js';
 import useCvMatFromFile from './hooks/useCvMatFromFile';
@@ -10,6 +20,7 @@ import { Project, renderProject } from './core/Project';
 import MenuBar from './components/MenuBar';
 
 function App() {
+  // TODO: Matのdelete
   const [project, setProject] = useState<Project>({});
   const [mat, imageFile, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
@@ -18,13 +29,19 @@ function App() {
   // TODO: ブラウザの設定をもとにデフォルト値を決める
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  const [openBinarizationDrawer, setOpenBinarizationDrawer] = useState(false);
+  const [binarizationThreshold, setBinarizationThreshold] = useState(100);
+
   // Headerをライトテーマにするために必要
   // https://github.com/ant-design/ant-design/issues/25048
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  useEffect(() => setProject((p) => ({ ...p, mat: mat })), [mat]);
+  useEffect(
+    () => setProject((p) => ({ ...p, mat: mat, previewMat: undefined })),
+    [mat],
+  );
 
   const handleGrayscale = () => {
     if (project.mat) {
@@ -36,12 +53,8 @@ function App() {
   };
 
   const handleBinarization = () => {
-    if (project.mat) {
-      const newMat = new cv.Mat();
-      cv.threshold(project.mat, newMat, 100, 255, cv.THRESH_BINARY);
-      project.mat.delete();
-      setProject({ ...project, mat: newMat });
-    }
+    setOpenBinarizationDrawer(!openBinarizationDrawer);
+    return;
   };
 
   // https://konvajs.org/docs/data_and_serialization/High-Quality-Export.html
@@ -52,6 +65,39 @@ function App() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    // TODO: プレビュー用のMatを書き換える
+    if (openBinarizationDrawer) {
+      setProject((p) => {
+        if (p.mat) {
+          const newMat = new cv.Mat();
+          cv.threshold(
+            p.mat,
+            newMat,
+            binarizationThreshold,
+            255,
+            cv.THRESH_BINARY,
+          );
+          return { ...p, previewMat: newMat };
+        }
+        return p;
+      });
+    }
+  }, [binarizationThreshold, openBinarizationDrawer]);
+
+  const disposePreview = () => {
+    setProject({ ...project, previewMat: undefined });
+  };
+
+  //プレビュー用のMatを保存用のMatにコピーする処理
+  const applyPreview = () => {
+    setProject((p) => ({
+      ...p,
+      mat: p.previewMat?.clone(),
+      previewMat: undefined,
+    }));
   };
 
   const handleSave = async () => {
@@ -69,6 +115,7 @@ function App() {
 
   const handleClose = () => {
     project.mat?.delete();
+    project.previewMat?.delete();
     setProject({});
   };
 
@@ -128,6 +175,46 @@ function App() {
           )}
         </Content>
       </Layout>
+      <Drawer
+        title="二値化"
+        open={openBinarizationDrawer}
+        onClose={() => {
+          disposePreview();
+          setOpenBinarizationDrawer(false);
+        }}
+        placement="right"
+        extra={
+          <Space>
+            <Button
+              onClick={() => {
+                disposePreview();
+                setOpenBinarizationDrawer(false);
+              }}
+            >
+              キャンセル
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                applyPreview();
+                setOpenBinarizationDrawer(false);
+              }}
+            >
+              適用
+            </Button>
+          </Space>
+        }
+        maskStyle={{ background: 'transparent' }}
+      >
+        <Typography>閾値:</Typography>
+        <Slider
+          defaultValue={binarizationThreshold}
+          max={255}
+          onChange={(num) => {
+            setBinarizationThreshold(num);
+          }}
+        />
+      </Drawer>
     </ConfigProvider>
   );
 }

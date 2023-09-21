@@ -23,7 +23,9 @@ export default function ImagePreview({
   height,
   isDarkMode,
 }: ImagePreviewProps) {
-  const imageBitmap = useImageBitmapFromCvMat(project.mat);
+  const imageBitmap = useImageBitmapFromCvMat(
+    project.previewMat ?? project.mat,
+  );
   const [scale, setScale] = useState(1.0);
   const [isDragging, setIsDragging] = useState(false);
   const [lastMousePos, setLastMousePos] = useState({ x: 0.0, y: 0.0 });

@@ -4,6 +4,7 @@ import { CvMatToImageBitmap } from '../utils/ConvertImage';
 
 export type Project = {
   mat?: cv.Mat;
+  previewMat?: cv.Mat;
 };
 
 /**
