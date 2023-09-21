@@ -7,6 +7,7 @@ import {
   Layout,
   Slider,
   Space,
+  Spin,
   Switch,
   Tooltip,
   Typography,
@@ -31,6 +32,8 @@ function App() {
   // TODO: 永続化
   // TODO: ブラウザの設定をもとにデフォルト値を決める
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const [isProcessingPreview, setIsProcessingPreview] = useState(false);
 
   const [openBinarizationDrawer, setOpenBinarizationDrawer] = useState(false);
   const [binarizationThreshold, setBinarizationThreshold] = useState(100);
@@ -81,42 +84,58 @@ function App() {
   };
 
   useEffect(() => {
-    if (openBinarizationDrawer) {
-      setProject((p) => {
-        if (p.mat) {
-          const dst = new cv.Mat();
-          cv.threshold(
-            p.mat,
-            dst,
-            binarizationThreshold,
-            255,
-            cv.THRESH_BINARY,
-          );
-          p.previewMat?.delete();
-          p.previewMat = undefined;
-          return { ...p, previewMat: dst };
-        }
-        return p;
+    const convertToGrayscale = async (
+      input: cv.Mat,
+      threshold: number,
+    ): Promise<cv.Mat> => {
+      return new Promise((resolve) => {
+        const dst = new cv.Mat();
+        cv.threshold(input, dst, threshold, 255, cv.THRESH_BINARY);
+        resolve(dst);
       });
+    };
+
+    if (openBinarizationDrawer && !isProcessingPreview) {
+      setIsProcessingPreview(true);
+      if (project.mat) {
+        convertToGrayscale(project.mat, binarizationThreshold).then((dst) => {
+          setIsProcessingPreview(false);
+          project.previewMat?.delete();
+          project.previewMat = undefined;
+          setProject({ ...project, previewMat: dst });
+        });
+      }
     }
-  }, [binarizationThreshold, openBinarizationDrawer]);
+  }, [binarizationThreshold, openBinarizationDrawer, isProcessingPreview]);
 
   useEffect(() => {
-    if (openCannyDrawer) {
-      setProject((p) => {
-        if (p.mat) {
-          const dst = new cv.Mat();
-          cv.Canny(p.mat, dst, cannyThreshold1, cannyThreshold2);
-          p.previewMat?.delete();
-          p.previewMat = undefined;
-          return { ...p, previewMat: dst };
-        }
-        return p;
+    const convert = async (
+      input: cv.Mat,
+      threshold1: number,
+      threshold2: number,
+    ): Promise<cv.Mat> => {
+      return new Promise((resolve) => {
+        const dst = new cv.Mat();
+        cv.Canny(input, dst, threshold1, threshold2);
+        resolve(dst);
       });
+    };
+
+    if (openCannyDrawer && !isProcessingPreview) {
+      setIsProcessingPreview(true);
+      if (project.mat) {
+        convert(project.mat, cannyThreshold1, cannyThreshold2).then((dst) => {
+          setIsProcessingPreview(false);
+          project.previewMat?.delete();
+          project.previewMat = undefined;
+          setProject({ ...project, previewMat: dst });
+        });
+      }
     }
-  }, [cannyThreshold1, cannyThreshold2, openCannyDrawer]);
+  }, [cannyThreshold1, cannyThreshold2, openCannyDrawer, isProcessingPreview]);
 
   const disposePreview = () => {
+    setIsProcessingPreview(false);
     setProject((p) => {
       p.previewMat?.delete();
       p.previewMat = undefined;
@@ -282,6 +301,7 @@ function App() {
             setBinarizationThreshold(num);
           }}
         />
+        {isProcessingPreview ? <Spin /> : undefined}
       </Drawer>
       <Drawer
         title="エッジ検出 (Canny法)"
@@ -330,6 +350,7 @@ function App() {
             setCannyThreshold2(num);
           }}
         />
+        {isProcessingPreview ? <Spin /> : undefined}
       </Drawer>
     </ConfigProvider>
   );
