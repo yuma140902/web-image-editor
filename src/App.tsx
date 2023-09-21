@@ -84,21 +84,23 @@ function App() {
   };
 
   useEffect(() => {
-    const convertToGrayscale = async (
+    const convert = async (
       input: cv.Mat,
       threshold: number,
     ): Promise<cv.Mat> => {
       return new Promise((resolve) => {
-        const dst = new cv.Mat();
-        cv.threshold(input, dst, threshold, 255, cv.THRESH_BINARY);
-        resolve(dst);
+        setTimeout(() => {
+          const dst = new cv.Mat();
+          cv.threshold(input, dst, threshold, 255, cv.THRESH_BINARY);
+          resolve(dst);
+        }, 0);
       });
     };
 
     if (openBinarizationDrawer && !isProcessingPreview) {
       setIsProcessingPreview(true);
       if (project.mat) {
-        convertToGrayscale(project.mat, binarizationThreshold).then((dst) => {
+        convert(project.mat, binarizationThreshold).then((dst) => {
           setIsProcessingPreview(false);
           project.previewMat?.delete();
           project.previewMat = undefined;
@@ -115,9 +117,11 @@ function App() {
       threshold2: number,
     ): Promise<cv.Mat> => {
       return new Promise((resolve) => {
-        const dst = new cv.Mat();
-        cv.Canny(input, dst, threshold1, threshold2);
-        resolve(dst);
+        setTimeout(() => {
+          const dst = new cv.Mat();
+          cv.Canny(input, dst, threshold1, threshold2);
+          resolve(dst);
+        }, 0);
       });
     };
 
