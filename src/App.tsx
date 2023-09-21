@@ -20,7 +20,6 @@ import { Project, renderProject } from './core/Project';
 import MenuBar from './components/MenuBar';
 
 function App() {
-  // TODO: Matのdelete
   const [project, setProject] = useState<Project>({});
   const [mat, imageFile, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
@@ -72,15 +71,15 @@ function App() {
     if (openBinarizationDrawer) {
       setProject((p) => {
         if (p.mat) {
-          const newMat = new cv.Mat();
+          const dst = new cv.Mat();
           cv.threshold(
             p.mat,
-            newMat,
+            dst,
             binarizationThreshold,
             255,
             cv.THRESH_BINARY,
           );
-          return { ...p, previewMat: newMat };
+          return { ...p, previewMat: dst };
         }
         return p;
       });
@@ -88,14 +87,16 @@ function App() {
   }, [binarizationThreshold, openBinarizationDrawer]);
 
   const disposePreview = () => {
-    setProject({ ...project, previewMat: undefined });
+    setProject((p) => {
+      p.previewMat?.delete();
+      return { ...p, previewMat: undefined };
+    });
   };
 
-  //プレビュー用のMatを保存用のMatにコピーする処理
   const applyPreview = () => {
     setProject((p) => ({
       ...p,
-      mat: p.previewMat?.clone(),
+      mat: p.previewMat,
       previewMat: undefined,
     }));
   };
