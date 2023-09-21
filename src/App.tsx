@@ -7,7 +7,7 @@ import useCvMatFromFile from './hooks/useCvMatFromFile';
 import { useWindowSize } from '@react-hook/window-size';
 import { useEffect, useRef, useState } from 'react';
 import { Stage } from 'konva/lib/Stage';
-import { Project } from './core/Project';
+import { Project, renderProject } from './core/Project';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -40,21 +40,17 @@ function App() {
     document.body.removeChild(link);
   };
 
-  // TODO: プレビュー用のコンポーネントに表示されている内容を保存する
-  // この設計はおかしいのでなんとかする
-  // 例えば拡大表示されているときは表示されている部分だけが保存されてしまう
-  const handleSave = () => {
-    if (stageRef.current) {
-      const dataUrl = stageRef.current.toDataURL({
-        pixelRatio: 1,
-        mimeType: 'image/png',
-        x: 0,
-        y: 0,
-        width: project.mat?.cols,
-        height: project.mat?.rows,
-      });
-      downloadURI(dataUrl, imageFile?.name ?? 'output.png');
-    }
+  const handleSave = async () => {
+    const stage = await renderProject(project);
+    const dataUrl = stage.toDataURL({
+      pixelRatio: 1,
+      mimeType: 'image/png',
+      x: 0,
+      y: 0,
+      width: project.mat?.cols,
+      height: project.mat?.rows,
+    });
+    downloadURI(dataUrl, imageFile?.name ?? 'output.png');
   };
 
   return (

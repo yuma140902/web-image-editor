@@ -2,14 +2,14 @@ import { Layer, Stage } from 'react-konva';
 import { Image } from 'react-konva';
 import useImageBitmapFromCvMat from '../hooks/useImageBitmapFromCvMat';
 import React from 'react';
-import { Stage as StageType } from 'konva/lib/Stage';
 import { Project } from '../core/Project';
+import Konva from 'konva';
 
 export type ImagePreviewProps = {
   project: Project;
   width: number;
   height: number;
-  stageRef: React.RefObject<StageType>;
+  stageRef: React.RefObject<Konva.Stage>;
 };
 
 /**
