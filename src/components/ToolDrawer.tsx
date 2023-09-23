@@ -26,7 +26,7 @@ export default function ToolDrawer({
       closable={false}
       onClose={handleConfirm}
       placement={windowWidth > windowHeight ? 'right' : 'bottom'}
-      maskStyle={{ background: 'transparent' }}
+      maskStyle={{ background: 'transparent', display: 'none' }}
       extra={
         <Space>
           <Button onClick={handleCancel}>キャンセル</Button>
