@@ -44,18 +44,18 @@ export default function ImagePreview({
     setOffset({ x: 0.0, y: 0.0 });
   };
 
-  const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handlePointerDown = (e: Konva.KonvaEventObject<PointerEvent>) => {
     setIsDragging(true);
     const posX = e.evt.pageX;
     const posY = e.evt.pageY;
     setLastMousePos({ x: posX, y: posY });
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = () => {
     setIsDragging(false);
   };
 
-  const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handlePointerMove = (e: Konva.KonvaEventObject<PointerEvent>) => {
     if (isDragging) {
       const posX = e.evt.pageX;
       const posY = e.evt.pageY;
@@ -73,9 +73,9 @@ export default function ImagePreview({
           width={width}
           height={height}
           className={`checker ${isDarkMode ? 'dark' : 'light'}`}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerMove={handlePointerMove}
         >
           <Layer>
             <Image
