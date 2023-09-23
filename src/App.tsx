@@ -147,7 +147,7 @@ function App() {
     });
   };
 
-  const applyPreview = () => {
+  const confirmPreview = () => {
     setProject((p) => ({
       ...p,
       mat: p.previewMat,
@@ -269,11 +269,12 @@ function App() {
       <Drawer
         title="二値化"
         open={openBinarizationDrawer}
+        closable={false}
         onClose={() => {
-          disposePreview();
+          confirmPreview();
           setOpenBinarizationDrawer(false);
         }}
-        placement="right"
+        placement={windowWidth > windowHeight ? 'right' : 'bottom'}
         extra={
           <Space>
             <Button
@@ -287,7 +288,7 @@ function App() {
             <Button
               type="primary"
               onClick={() => {
-                applyPreview();
+                confirmPreview();
                 setOpenBinarizationDrawer(false);
               }}
             >
@@ -310,11 +311,12 @@ function App() {
       <Drawer
         title="エッジ検出 (Canny法)"
         open={openCannyDrawer}
+        closable={false}
         onClose={() => {
-          disposePreview();
+          confirmPreview();
           setOpenCannyDrawer(false);
         }}
-        placement="right"
+        placement={windowWidth > windowHeight ? 'right' : 'bottom'}
         extra={
           <Space>
             <Button
@@ -328,7 +330,7 @@ function App() {
             <Button
               type="primary"
               onClick={() => {
-                applyPreview();
+                confirmPreview();
                 setOpenCannyDrawer(false);
               }}
             >
