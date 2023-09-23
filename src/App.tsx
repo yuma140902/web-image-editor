@@ -344,7 +344,7 @@ function App() {
         onOk={handleCloseAboutDialog}
         footer={
           <Button type="default" onClick={handleCloseAboutDialog}>
-            OK
+            閉じる
           </Button>
         }
       >
@@ -353,10 +353,14 @@ function App() {
           title="Web Image Editor"
           extra={
             <>
-              <Typography.Text type="secondary">Author: yuma14</Typography.Text>
-              <br />
               <GithubFilled />
               <Typography.Link>yuma140902/web-image-editor</Typography.Link>
+              <br />
+              <Typography.Text type="secondary">作者: yuma14</Typography.Text>
+              <br />
+              <Typography.Text type="secondary">
+                バージョン: {`${__COMMIT_ID__} (${__GIT_BRANCH__} ブランチ)`}
+              </Typography.Text>
             </>
           }
         />
