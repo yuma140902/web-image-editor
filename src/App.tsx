@@ -3,7 +3,6 @@ import ImagePreview from './components/ImagePreview';
 import {
   Button,
   ConfigProvider,
-  Drawer,
   Layout,
   Modal,
   Result,
@@ -27,6 +26,7 @@ import githubLightIcon from './github-mark.svg';
 import githubDarkIcon from './github-mark-white.svg';
 import QuickMenu from './components/QuickMenu';
 import { GithubFilled } from '@ant-design/icons';
+import ToolDrawer from './components/ToolDrawer';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -313,37 +313,17 @@ function App() {
           }
         />
       </Modal>
-      <Drawer
+      <ToolDrawer
         title="二値化"
         open={openBinarizationDrawer}
-        closable={false}
-        onClose={() => {
+        handleCancel={() => {
+          disposePreview();
+          setOpenBinarizationDrawer(false);
+        }}
+        handleConfirm={() => {
           confirmPreview();
           setOpenBinarizationDrawer(false);
         }}
-        placement={windowWidth > windowHeight ? 'right' : 'bottom'}
-        extra={
-          <Space>
-            <Button
-              onClick={() => {
-                disposePreview();
-                setOpenBinarizationDrawer(false);
-              }}
-            >
-              キャンセル
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                confirmPreview();
-                setOpenBinarizationDrawer(false);
-              }}
-            >
-              適用
-            </Button>
-          </Space>
-        }
-        maskStyle={{ background: 'transparent' }}
       >
         <Typography>閾値:</Typography>
         <Slider
@@ -354,38 +334,18 @@ function App() {
           }}
         />
         {isProcessingPreview ? <Spin /> : undefined}
-      </Drawer>
-      <Drawer
+      </ToolDrawer>
+      <ToolDrawer
         title="エッジ検出 (Canny法)"
         open={openCannyDrawer}
-        closable={false}
-        onClose={() => {
+        handleCancel={() => {
+          disposePreview();
+          setOpenCannyDrawer(false);
+        }}
+        handleConfirm={() => {
           confirmPreview();
           setOpenCannyDrawer(false);
         }}
-        placement={windowWidth > windowHeight ? 'right' : 'bottom'}
-        extra={
-          <Space>
-            <Button
-              onClick={() => {
-                disposePreview();
-                setOpenCannyDrawer(false);
-              }}
-            >
-              キャンセル
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                confirmPreview();
-                setOpenCannyDrawer(false);
-              }}
-            >
-              適用
-            </Button>
-          </Space>
-        }
-        maskStyle={{ background: 'transparent' }}
       >
         <Typography>閾値1:</Typography>
         <Slider
@@ -404,7 +364,7 @@ function App() {
           }}
         />
         {isProcessingPreview ? <Spin /> : undefined}
-      </Drawer>
+      </ToolDrawer>
     </ConfigProvider>
   );
 }
