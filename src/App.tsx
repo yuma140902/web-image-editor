@@ -215,7 +215,6 @@ function App() {
             const output = new cv.Mat();
             if (contrastUseAlphaCh && input.type() === cv.CV_8UC4) {
               // 透明度を考慮した変換処理
-              console.log('4ch mode');
               const inputChannels = new cv.MatVector();
               const inputColorChannels = new cv.MatVector();
               const inputColor = new cv.Mat();
@@ -383,6 +382,9 @@ function App() {
             handleInvert={handleInvert}
             handleContrast={handleContrast}
           />
+          <Space>
+            <Spin spinning={isProcessingPreview} />
+          </Space>
           <Space style={{ float: 'right', marginLeft: 'auto' }}>
             <Switch
               checkedChildren="Dark"
@@ -504,7 +506,7 @@ function App() {
           marks={{ 0: 0, 255: 255 }}
           onChange={setBinarizationThreshold}
         />
-        {isProcessingPreview ? <Spin /> : undefined}
+        <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
       <ToolDrawer
         title="エッジ検出 (Canny法)"
@@ -532,7 +534,7 @@ function App() {
           marks={{ 0: 0, 255: 255 }}
           onChange={setCannyThreshold2}
         />
-        {isProcessingPreview ? <Spin /> : undefined}
+        <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
       <ToolDrawer
         title="コントラストと明るさ"
@@ -572,7 +574,7 @@ function App() {
           marks={{ '-255': -255, 0: 0, 255: 255 }}
           onChange={setContrastBeta}
         />
-        {isProcessingPreview ? <Spin /> : undefined}
+        <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
     </ConfigProvider>
   );
