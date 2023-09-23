@@ -213,7 +213,13 @@ function App() {
         setTimeout(() => {
           try {
             const output = new cv.Mat();
-            if (contrastUseAlphaCh && input.type() === cv.CV_8UC4) {
+            let inputCvt = new cv.Mat();
+            if (!contrastUseAlphaCh) {
+              cv.cvtColor(input, inputCvt, cv.COLOR_BGRA2BGR);
+            } else {
+              inputCvt = input.clone();
+            }
+            if (inputCvt.type() === cv.CV_8UC4) {
               // 透明度を考慮した変換処理
               const inputChannels = new cv.MatVector();
               const inputColorChannels = new cv.MatVector();
@@ -221,7 +227,7 @@ function App() {
               const outputColor = new cv.Mat();
               const outputColorChannels = new cv.MatVector();
               const outputChannels = new cv.MatVector();
-              cv.split(input, inputChannels);
+              cv.split(inputCvt, inputChannels);
               inputColorChannels.push_back(inputChannels.get(0));
               inputColorChannels.push_back(inputChannels.get(1));
               inputColorChannels.push_back(inputChannels.get(2));
@@ -240,8 +246,9 @@ function App() {
               inputColorChannels.delete();
               inputChannels.delete();
             } else {
-              cv.convertScaleAbs(input, output, alpha, beta);
+              cv.convertScaleAbs(inputCvt, output, alpha, beta);
             }
+            inputCvt.delete();
             resolve(output);
           } catch (e) {
             console.error(e);
