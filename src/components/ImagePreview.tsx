@@ -66,6 +66,10 @@ export default function ImagePreview({
     }
   };
 
+  const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
+    setScale(scale * (1.0 + e.evt.deltaY * -0.001));
+  };
+
   if (imageBitmap) {
     return (
       <>
@@ -76,6 +80,7 @@ export default function ImagePreview({
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerMove={handlePointerMove}
+          onWheel={handleWheel}
         >
           <Layer>
             <Image
