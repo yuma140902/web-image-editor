@@ -5,6 +5,8 @@ import {
   ConfigProvider,
   Drawer,
   Layout,
+  Modal,
+  Result,
   Slider,
   Space,
   Spin,
@@ -24,6 +26,7 @@ import appIcon from './icon.png';
 import githubLightIcon from './github-mark.svg';
 import githubDarkIcon from './github-mark-white.svg';
 import QuickMenu from './components/QuickMenu';
+import { GithubFilled } from '@ant-design/icons';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -35,6 +38,8 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const [isProcessingPreview, setIsProcessingPreview] = useState(false);
+
+  const [openAboutDialog, setOpenAboutDialog] = useState(false);
 
   const [openBinarizationDrawer, setOpenBinarizationDrawer] = useState(false);
   const [binarizationThreshold, setBinarizationThreshold] = useState(100);
@@ -179,6 +184,14 @@ function App() {
 
   const projectIsOpened = (): boolean => !!project.mat;
 
+  const handleOpenAboutDialog = () => {
+    setOpenAboutDialog(true);
+  };
+
+  const handleCloseAboutDialog = () => {
+    setOpenAboutDialog(false);
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -203,17 +216,23 @@ function App() {
             ...(isDarkMode ? {} : { background: colorBgContainer }),
           }}
         >
-          <img
-            src={appIcon}
-            height={headerHeight}
-            style={{
-              marginLeft: '10px',
-              marginRight: '10px',
-            }}
-          />
-          <Space>
-            <Typography.Text strong>Web Image Editor</Typography.Text>
-          </Space>
+          <a href="#" role="button" onClick={handleOpenAboutDialog}>
+            <img
+              src={appIcon}
+              height={headerHeight}
+              style={{
+                marginLeft: '10px',
+                marginRight: '10px',
+              }}
+            />
+          </a>
+          <a href="#" role="button" onClick={handleOpenAboutDialog}>
+            <Space>
+              <Typography.Text hidden={windowWidth < 500} strong>
+                Web Image Editor
+              </Typography.Text>
+            </Space>
+          </a>
           <MenuBar
             projectIsOpened={projectIsOpened()}
             isDarkMode={isDarkMode}
@@ -245,29 +264,55 @@ function App() {
               >
                 <img
                   src={isDarkMode ? githubDarkIcon : githubLightIcon}
-                  height={28}
+                  height={24}
                   style={{ verticalAlign: 'middle' }}
                 />
               </div>
             </a>
           </Tooltip>
         </Header>
-        <QuickMenu handleSave={handleSave} />
         <Content>
           {!projectIsOpened() ? (
             <div style={{ padding: '2rem', height: '100%' }}>
               <ImageSelector handleImageFile={(file) => setImageFile(file)} />
             </div>
           ) : (
-            <ImagePreview
-              project={project}
-              width={windowWidth}
-              height={windowHeight - headerHeight}
-              isDarkMode={isDarkMode}
-            />
+            <>
+              <QuickMenu handleSave={handleSave} />
+              <ImagePreview
+                project={project}
+                width={windowWidth}
+                height={windowHeight - headerHeight}
+                isDarkMode={isDarkMode}
+              />
+            </>
           )}
         </Content>
       </Layout>
+      <Modal
+        open={openAboutDialog}
+        closable={false}
+        onCancel={handleCloseAboutDialog}
+        onOk={handleCloseAboutDialog}
+        footer={
+          <Button type="default" onClick={handleCloseAboutDialog}>
+            OK
+          </Button>
+        }
+      >
+        <Result
+          icon={<img src={appIcon} />}
+          title="Web Image Editor"
+          extra={
+            <>
+              <Typography.Text type="secondary">Author: yuma14</Typography.Text>
+              <br />
+              <GithubFilled />
+              <Typography.Link>yuma140902/web-image-editor</Typography.Link>
+            </>
+          }
+        />
+      </Modal>
       <Drawer
         title="二値化"
         open={openBinarizationDrawer}
