@@ -421,6 +421,7 @@ function App() {
         <Slider
           defaultValue={binarizationThreshold}
           max={255}
+          marks={{ 0: 0, 255: 255 }}
           onChange={(num) => {
             setBinarizationThreshold(num);
           }}
@@ -443,6 +444,7 @@ function App() {
         <Slider
           defaultValue={cannyThreshold1}
           max={255}
+          marks={{ 0: 0, 255: 255 }}
           onChange={(num) => {
             setCannyThreshold1(num);
           }}
@@ -451,6 +453,7 @@ function App() {
         <Slider
           defaultValue={cannyThreshold2}
           max={255}
+          marks={{ 0: 0, 255: 255 }}
           onChange={(num) => {
             setCannyThreshold2(num);
           }}
