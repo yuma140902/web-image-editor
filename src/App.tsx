@@ -30,6 +30,7 @@ import ToolDrawer from './components/ToolDrawer';
 
 function App() {
   const [project, setProject] = useState<Project>({});
+  const [projectIsOpened, setProjectIsOpened] = useState(false);
   const [mat, imageFile, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
   const HEADER_HEIGHT = 64;
@@ -56,8 +57,6 @@ function App() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
-  const projectIsOpened = (): boolean => !!project.mat;
 
   const windowIsLandscape = (): boolean => windowWidth > windowHeight;
 
@@ -197,6 +196,7 @@ function App() {
     project.previewMat?.delete();
     project.previewMat = undefined;
     setProject({});
+    setProjectIsOpened(false);
   };
 
   const handleOpenAboutDialog = () => {
@@ -249,7 +249,7 @@ function App() {
             </Space>
           </a>
           <MenuBar
-            projectIsOpened={projectIsOpened()}
+            projectIsOpened={projectIsOpened}
             isDarkMode={isDarkMode}
             handleSave={handleSave}
             handleClose={handleClose}
@@ -287,9 +287,14 @@ function App() {
           </Tooltip>
         </Header>
         <Content>
-          {!projectIsOpened() ? (
+          {!projectIsOpened ? (
             <div style={{ padding: '2rem', height: '100%' }}>
-              <ImageSelector handleImageFile={(file) => setImageFile(file)} />
+              <ImageSelector
+                handleImageFile={(file) => {
+                  setImageFile(file);
+                  setProjectIsOpened(true);
+                }}
+              />
             </div>
           ) : (
             <>

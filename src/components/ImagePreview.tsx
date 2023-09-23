@@ -2,7 +2,7 @@ import { Layer, Stage } from 'react-konva';
 import { Image } from 'react-konva';
 import useImageBitmapFromCvMat from '../hooks/useImageBitmapFromCvMat';
 import { Project } from '../core/Project';
-import { FloatButton, Tooltip } from 'antd';
+import { FloatButton, Spin, Tooltip } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Konva from 'konva';
@@ -74,18 +74,18 @@ export default function ImagePreview({
     setScale(scale * (1.0 + e.evt.deltaY * -0.001));
   };
 
-  if (imageBitmap) {
-    return (
-      <>
-        <Stage
-          width={width}
-          height={height}
-          className={`checker ${isDarkMode ? 'dark' : 'light'}`}
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerMove={handlePointerMove}
-          onWheel={handleWheel}
-        >
+  return (
+    <Spin tip="読み込み中" spinning={!imageBitmap} size="large">
+      <Stage
+        width={width}
+        height={height}
+        className={`checker ${isDarkMode ? 'dark' : 'light'}`}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerMove={handlePointerMove}
+        onWheel={handleWheel}
+      >
+        {imageBitmap ? (
           <Layer>
             <Image
               image={imageBitmap}
@@ -95,31 +95,29 @@ export default function ImagePreview({
               y={height / 2 - (imageBitmap.height * scale) / 2 + offset.y}
             />
           </Layer>
-        </Stage>
-        <FloatButton.Group
-          shape="square"
-          style={{
-            right: 24 + (rightOffset ?? 0),
-            bottom: 24 + (bottomOffset ?? 0),
-          }}
-        >
-          <Tooltip title="ズームイン" placement="left">
-            <FloatButton icon={<PlusOutlined />} onClick={handleZoomIn} />
-          </Tooltip>
-          <Tooltip title="ズームアウト" placement="left">
-            <FloatButton icon={<MinusOutlined />} onClick={handleZoomOut} />
-          </Tooltip>
-          <Tooltip title="ビューをリセット" placement="left">
-            <FloatButton
-              shape="square"
-              description="1:1"
-              onClick={handleViewReset}
-            />
-          </Tooltip>
-        </FloatButton.Group>
-      </>
-    );
-  } else {
-    return <div>nothing</div>;
-  }
+        ) : undefined}
+      </Stage>
+      <FloatButton.Group
+        shape="square"
+        style={{
+          right: 24 + (rightOffset ?? 0),
+          bottom: 24 + (bottomOffset ?? 0),
+        }}
+      >
+        <Tooltip title="ズームイン" placement="left">
+          <FloatButton icon={<PlusOutlined />} onClick={handleZoomIn} />
+        </Tooltip>
+        <Tooltip title="ズームアウト" placement="left">
+          <FloatButton icon={<MinusOutlined />} onClick={handleZoomOut} />
+        </Tooltip>
+        <Tooltip title="ビューをリセット" placement="left">
+          <FloatButton
+            shape="square"
+            description="1:1"
+            onClick={handleViewReset}
+          />
+        </Tooltip>
+      </FloatButton.Group>
+    </Spin>
+  );
 }
