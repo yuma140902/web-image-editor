@@ -274,7 +274,7 @@ function App() {
           confirmPreview();
           setOpenBinarizationDrawer(false);
         }}
-        placement="right"
+        placement={windowWidth > windowHeight ? 'right' : 'bottom'}
         extra={
           <Space>
             <Button
@@ -316,7 +316,7 @@ function App() {
           confirmPreview();
           setOpenCannyDrawer(false);
         }}
-        placement="right"
+        placement={windowWidth > windowHeight ? 'right' : 'bottom'}
         extra={
           <Space>
             <Button
