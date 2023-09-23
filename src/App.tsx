@@ -31,6 +31,7 @@ import ToolDrawer from './components/ToolDrawer';
 function App() {
   const [project, setProject] = useState<Project>({});
   const [projectIsOpened, setProjectIsOpened] = useState(false);
+  const [projectHasChanges, setProjectHasChanges] = useState(false);
   const [mat, imageFile, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
   const HEADER_HEIGHT = 64;
@@ -80,6 +81,7 @@ function App() {
       project.mat.delete();
       project.mat = undefined;
       setProject({ ...project, mat: imgGray });
+      setProjectHasChanges(true);
     }
   };
 
@@ -165,6 +167,7 @@ function App() {
       mat: p.previewMat,
       previewMat: undefined,
     }));
+    setProjectHasChanges(true);
   };
 
   const handleSave = async () => {
@@ -188,6 +191,7 @@ function App() {
       height: project.mat?.rows,
     });
     downloadURI(dataUrl, imageFile?.name ?? 'output.png');
+    setProjectHasChanges(false);
   };
 
   const handleClose = () => {
@@ -197,6 +201,7 @@ function App() {
     project.previewMat = undefined;
     setProject({});
     setProjectIsOpened(false);
+    setProjectHasChanges(false);
   };
 
   const handleOpenAboutDialog = () => {
@@ -251,6 +256,7 @@ function App() {
           <MenuBar
             projectIsOpened={projectIsOpened}
             isDarkMode={isDarkMode}
+            hasUnsavedChanges={projectHasChanges}
             handleSave={handleSave}
             handleClose={handleClose}
             handleGrayscale={handleGrayscale}
@@ -298,7 +304,10 @@ function App() {
             </div>
           ) : (
             <>
-              <QuickMenu handleSave={handleSave} />
+              <QuickMenu
+                handleSave={handleSave}
+                hasUnsavedChanges={projectHasChanges}
+              />
               <ImagePreview
                 project={project}
                 width={

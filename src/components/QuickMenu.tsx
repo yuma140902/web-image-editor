@@ -1,15 +1,21 @@
 import { SaveOutlined } from '@ant-design/icons';
-import { FloatButton, Tooltip } from 'antd';
+import { Badge, FloatButton, Tooltip } from 'antd';
 
 export type QuickMenuProps = {
   handleSave: () => void;
+  hasUnsavedChanges: boolean;
 };
 
-export default function QuickMenu({ handleSave }: QuickMenuProps) {
+export default function QuickMenu({
+  handleSave,
+  hasUnsavedChanges,
+}: QuickMenuProps) {
   return (
     <FloatButton.Group style={{ top: 100, left: 24 }}>
       <Tooltip title="保存" placement="right">
-        <FloatButton icon={<SaveOutlined />} onClick={handleSave} />
+        <Badge dot={hasUnsavedChanges}>
+          <FloatButton icon={<SaveOutlined />} onClick={handleSave} />
+        </Badge>
       </Tooltip>
     </FloatButton.Group>
   );

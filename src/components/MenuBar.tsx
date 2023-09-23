@@ -1,9 +1,10 @@
 import { DeleteOutlined, SaveOutlined } from '@ant-design/icons';
-import { Menu, MenuProps } from 'antd';
+import { Badge, Menu, MenuProps } from 'antd';
 
 export type MenuBarProps = {
   projectIsOpened: boolean;
   isDarkMode: boolean;
+  hasUnsavedChanges: boolean;
   handleSave: () => Promise<void>;
   handleClose: () => void;
   handleGrayscale: () => void;
@@ -14,6 +15,7 @@ export type MenuBarProps = {
 export default function MenuBar({
   projectIsOpened,
   isDarkMode,
+  hasUnsavedChanges,
   handleSave,
   handleClose,
   handleGrayscale,
@@ -42,7 +44,11 @@ export default function MenuBar({
         {
           label: '保存',
           key: 'save',
-          icon: <SaveOutlined />,
+          icon: (
+            <Badge dot={hasUnsavedChanges}>
+              <SaveOutlined />
+            </Badge>
+          ),
           disabled: !projectIsOpened,
         },
         {
