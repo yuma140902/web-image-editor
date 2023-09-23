@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 export type ToolDrawerProps = {
   title: string;
   open: boolean;
+  size?: number;
   handleCancel: () => void;
   handleConfirm: () => void;
   children: ReactNode;

@@ -32,7 +32,10 @@ function App() {
   const [project, setProject] = useState<Project>({});
   const [mat, imageFile, setImageFile] = useCvMatFromFile();
   const [windowWidth, windowHeight] = useWindowSize();
-  const headerHeight = 64;
+  const HEADER_HEIGHT = 64;
+  // AntdのDrawerのサイズは378で固定である
+  // https://ant.design/components/drawer#api
+  const DRAWER_SIZE = 378;
   // TODO: 永続化
   // TODO: ブラウザの設定をもとにデフォルト値を決める
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -54,6 +57,18 @@ function App() {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const projectIsOpened = (): boolean => !!project.mat;
+
+  const windowIsLandscape = (): boolean => windowWidth > windowHeight;
+
+  const anyToolDrawerIsOpen = (): boolean =>
+    openBinarizationDrawer || openCannyDrawer;
+
+  const closeAllToolDrawers = () => {
+    setOpenBinarizationDrawer(false);
+    setOpenCannyDrawer(false);
+  };
+
   useEffect(
     () => setProject((p) => ({ ...p, mat: mat, previewMat: undefined })),
     [mat],
@@ -70,23 +85,15 @@ function App() {
   };
 
   const handleBinarization = () => {
+    closeAllToolDrawers();
     setOpenBinarizationDrawer(!openBinarizationDrawer);
     return;
   };
 
   const handleCanny = () => {
+    closeAllToolDrawers();
     setOpenCannyDrawer(!openCannyDrawer);
     return;
-  };
-
-  // https://konvajs.org/docs/data_and_serialization/High-Quality-Export.html
-  const downloadURI = (uri: string, filename: string) => {
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   useEffect(() => {
@@ -162,6 +169,16 @@ function App() {
   };
 
   const handleSave = async () => {
+    // https://konvajs.org/docs/data_and_serialization/High-Quality-Export.html
+    const downloadURI = (uri: string, filename: string) => {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
     const stage = await renderProject(project);
     const dataUrl = stage.toDataURL({
       pixelRatio: 1,
@@ -182,8 +199,6 @@ function App() {
     setProject({});
   };
 
-  const projectIsOpened = (): boolean => !!project.mat;
-
   const handleOpenAboutDialog = () => {
     setOpenAboutDialog(true);
   };
@@ -198,7 +213,7 @@ function App() {
         algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
         components: {
           Layout: {
-            headerHeight: headerHeight,
+            headerHeight: HEADER_HEIGHT,
           },
         },
       }}
@@ -219,7 +234,7 @@ function App() {
           <a href="#" role="button" onClick={handleOpenAboutDialog}>
             <img
               src={appIcon}
-              height={headerHeight}
+              height={HEADER_HEIGHT}
               style={{
                 marginLeft: '10px',
                 marginRight: '10px',
@@ -281,8 +296,27 @@ function App() {
               <QuickMenu handleSave={handleSave} />
               <ImagePreview
                 project={project}
-                width={windowWidth}
-                height={windowHeight - headerHeight}
+                width={
+                  windowWidth -
+                  (windowIsLandscape() && anyToolDrawerIsOpen()
+                    ? DRAWER_SIZE
+                    : 0)
+                }
+                height={
+                  windowHeight -
+                  HEADER_HEIGHT -
+                  (!windowIsLandscape() && anyToolDrawerIsOpen()
+                    ? DRAWER_SIZE
+                    : 0)
+                }
+                rightOffset={
+                  windowIsLandscape() && anyToolDrawerIsOpen() ? DRAWER_SIZE : 0
+                }
+                bottomOffset={
+                  !windowIsLandscape() && anyToolDrawerIsOpen()
+                    ? DRAWER_SIZE
+                    : 0
+                }
                 isDarkMode={isDarkMode}
               />
             </>

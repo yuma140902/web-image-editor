@@ -11,6 +11,8 @@ export type ImagePreviewProps = {
   project: Project;
   width: number;
   height: number;
+  rightOffset?: number;
+  bottomOffset?: number;
   isDarkMode: boolean;
 };
 
@@ -21,6 +23,8 @@ export default function ImagePreview({
   project,
   width,
   height,
+  rightOffset,
+  bottomOffset,
   isDarkMode,
 }: ImagePreviewProps) {
   const imageBitmap = useImageBitmapFromCvMat(
@@ -92,7 +96,13 @@ export default function ImagePreview({
             />
           </Layer>
         </Stage>
-        <FloatButton.Group shape="square" style={{ right: 24 }}>
+        <FloatButton.Group
+          shape="square"
+          style={{
+            right: 24 + (rightOffset ?? 0),
+            bottom: 24 + (bottomOffset ?? 0),
+          }}
+        >
           <Tooltip title="ズームイン" placement="left">
             <FloatButton icon={<PlusOutlined />} onClick={handleZoomIn} />
           </Tooltip>
