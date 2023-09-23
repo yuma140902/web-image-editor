@@ -147,7 +147,7 @@ function App() {
     });
   };
 
-  const applyPreview = () => {
+  const confirmPreview = () => {
     setProject((p) => ({
       ...p,
       mat: p.previewMat,
@@ -271,7 +271,7 @@ function App() {
         open={openBinarizationDrawer}
         closable={false}
         onClose={() => {
-          applyPreview();
+          confirmPreview();
           setOpenBinarizationDrawer(false);
         }}
         placement="right"
@@ -288,7 +288,7 @@ function App() {
             <Button
               type="primary"
               onClick={() => {
-                applyPreview();
+                confirmPreview();
                 setOpenBinarizationDrawer(false);
               }}
             >
@@ -313,7 +313,7 @@ function App() {
         open={openCannyDrawer}
         closable={false}
         onClose={() => {
-          applyPreview();
+          confirmPreview();
           setOpenCannyDrawer(false);
         }}
         placement="right"
@@ -330,7 +330,7 @@ function App() {
             <Button
               type="primary"
               onClick={() => {
-                applyPreview();
+                confirmPreview();
                 setOpenCannyDrawer(false);
               }}
             >
