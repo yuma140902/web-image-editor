@@ -97,6 +97,45 @@ function App() {
     return;
   };
 
+  const handleInvert = () => {
+    if (project.mat) {
+      const dst = new cv.Mat();
+      switch (project.mat.type()) {
+        case cv.CV_8UC1:
+          cv.bitwise_not(project.mat, dst);
+          break;
+        case cv.CV_8UC3:
+        case cv.CV_8UC4: {
+          const channels = new cv.MatVector();
+          const ch0inv = new cv.Mat();
+          const ch1inv = new cv.Mat();
+          const ch2inv = new cv.Mat();
+          const channelsInv = new cv.MatVector();
+          cv.split(project.mat, channels);
+          cv.bitwise_not(channels.get(0), ch0inv);
+          cv.bitwise_not(channels.get(1), ch1inv);
+          cv.bitwise_not(channels.get(2), ch2inv);
+          channelsInv.push_back(ch0inv);
+          channelsInv.push_back(ch1inv);
+          channelsInv.push_back(ch2inv);
+          channelsInv.push_back(channels.get(3));
+          cv.merge(channelsInv, dst);
+
+          channelsInv.delete();
+          ch2inv.delete();
+          ch1inv.delete();
+          ch0inv.delete();
+          channels.delete();
+          break;
+        }
+      }
+      project.mat.delete();
+      project.mat = undefined;
+      setProject({ ...project, mat: dst });
+      setProjectHasChanges(true);
+    }
+  };
+
   useEffect(() => {
     const convert = async (
       input: cv.Mat,
@@ -262,6 +301,7 @@ function App() {
             handleGrayscale={handleGrayscale}
             handleBinarization={handleBinarization}
             handleCanny={handleCanny}
+            handleInvert={handleInvert}
           />
           <Space style={{ float: 'right', marginLeft: 'auto' }}>
             <Switch
