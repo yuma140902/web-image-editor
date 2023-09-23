@@ -2,6 +2,7 @@ import ImageSelector from './components/ImageSelector';
 import ImagePreview from './components/ImagePreview';
 import {
   Button,
+  Checkbox,
   ConfigProvider,
   Layout,
   Modal,
@@ -27,6 +28,7 @@ import githubDarkIcon from './github-mark-white.svg';
 import QuickMenu from './components/QuickMenu';
 import { GithubFilled } from '@ant-design/icons';
 import ToolDrawer from './components/ToolDrawer';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -52,6 +54,11 @@ function App() {
   const [openCannyDrawer, setOpenCannyDrawer] = useState(false);
   const [cannyThreshold1, setCannyThreshold1] = useState(100);
   const [cannyThreshold2, setCannyThreshold2] = useState(200);
+
+  const [openContrastDrawer, setOpenContrastDrawer] = useState(false);
+  const [contrastUseAlphaCh, setContrastUseAlphaCh] = useState(false);
+  const [contrastAlpha, setContrastAlpha] = useState(1.0);
+  const [contrastBeta, setContrastBeta] = useState(0);
 
   // Headerをライトテーマにするために必要
   // https://github.com/ant-design/ant-design/issues/25048
@@ -136,6 +143,11 @@ function App() {
     }
   };
 
+  const handleContrast = () => {
+    closeAllToolDrawers();
+    setOpenContrastDrawer(!openContrastDrawer);
+  };
+
   useEffect(() => {
     const convert = async (
       input: cv.Mat,
@@ -190,6 +202,73 @@ function App() {
       }
     }
   }, [cannyThreshold1, cannyThreshold2, openCannyDrawer, isProcessingPreview]);
+
+  useEffect(() => {
+    const convert = async (
+      input: cv.Mat,
+      alpha: number,
+      beta: number,
+    ): Promise<cv.Mat> => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          try {
+            const output = new cv.Mat();
+            if (contrastUseAlphaCh && input.type() === cv.CV_8UC4) {
+              // 透明度を考慮した変換処理
+              console.log('4ch mode');
+              const inputChannels = new cv.MatVector();
+              const inputColorChannels = new cv.MatVector();
+              const inputColor = new cv.Mat();
+              const outputColor = new cv.Mat();
+              const outputColorChannels = new cv.MatVector();
+              const outputChannels = new cv.MatVector();
+              cv.split(input, inputChannels);
+              inputColorChannels.push_back(inputChannels.get(0));
+              inputColorChannels.push_back(inputChannels.get(1));
+              inputColorChannels.push_back(inputChannels.get(2));
+              cv.merge(inputColorChannels, inputColor);
+              cv.convertScaleAbs(inputColor, outputColor, alpha, beta);
+              cv.split(outputColor, outputColorChannels);
+              outputChannels.push_back(outputColorChannels.get(0));
+              outputChannels.push_back(outputColorChannels.get(1));
+              outputChannels.push_back(outputColorChannels.get(2));
+              outputChannels.push_back(inputChannels.get(3));
+              cv.merge(outputChannels, output);
+              outputChannels.delete();
+              outputColorChannels.delete();
+              outputColor.delete();
+              inputColor.delete();
+              inputColorChannels.delete();
+              inputChannels.delete();
+            } else {
+              cv.convertScaleAbs(input, output, alpha, beta);
+            }
+            resolve(output);
+          } catch (e) {
+            console.error(e);
+          }
+        }, 0);
+      });
+    };
+
+    if (openContrastDrawer && !isProcessingPreview) {
+      setIsProcessingPreview(true);
+      if (project.mat) {
+        convert(project.mat, contrastAlpha, contrastBeta).then((dst) => {
+          setIsProcessingPreview(false);
+          project.previewMat?.delete();
+          project.previewMat = undefined;
+          setProject({ ...project, previewMat: dst });
+        });
+      }
+    }
+  }, [
+    contrastUseAlphaCh,
+    contrastAlpha,
+    contrastBeta,
+    openContrastDrawer,
+    isProcessingPreview,
+  ]);
 
   const disposePreview = () => {
     setIsProcessingPreview(false);
@@ -302,6 +381,7 @@ function App() {
             handleBinarization={handleBinarization}
             handleCanny={handleCanny}
             handleInvert={handleInvert}
+            handleContrast={handleContrast}
           />
           <Space style={{ float: 'right', marginLeft: 'auto' }}>
             <Switch
@@ -422,9 +502,7 @@ function App() {
           defaultValue={binarizationThreshold}
           max={255}
           marks={{ 0: 0, 255: 255 }}
-          onChange={(num) => {
-            setBinarizationThreshold(num);
-          }}
+          onChange={setBinarizationThreshold}
         />
         {isProcessingPreview ? <Spin /> : undefined}
       </ToolDrawer>
@@ -445,18 +523,54 @@ function App() {
           defaultValue={cannyThreshold1}
           max={255}
           marks={{ 0: 0, 255: 255 }}
-          onChange={(num) => {
-            setCannyThreshold1(num);
-          }}
+          onChange={setCannyThreshold1}
         />
         <Typography>閾値2:</Typography>
         <Slider
           defaultValue={cannyThreshold2}
           max={255}
           marks={{ 0: 0, 255: 255 }}
-          onChange={(num) => {
-            setCannyThreshold2(num);
-          }}
+          onChange={setCannyThreshold2}
+        />
+        {isProcessingPreview ? <Spin /> : undefined}
+      </ToolDrawer>
+      <ToolDrawer
+        title="コントラストと明るさ"
+        open={openContrastDrawer}
+        handleCancel={() => {
+          disposePreview();
+          setOpenContrastDrawer(false);
+        }}
+        handleConfirm={() => {
+          confirmPreview();
+          setOpenContrastDrawer(false);
+        }}
+      >
+        <Checkbox
+          defaultChecked={contrastUseAlphaCh}
+          onChange={(e: CheckboxChangeEvent) =>
+            setContrastUseAlphaCh(e.target.checked)
+          }
+        >
+          画像の透明度を考慮する
+          <wbr />
+          （処理が重いので非推奨）
+        </Checkbox>
+        <Typography>コントラスト:</Typography>
+        <Slider
+          defaultValue={contrastAlpha}
+          max={5}
+          step={0.1}
+          marks={{ 0: 0, 1: 1, 5: 5 }}
+          onChange={setContrastAlpha}
+        />
+        <Typography>明るさ:</Typography>
+        <Slider
+          defaultValue={contrastBeta}
+          min={-255}
+          max={255}
+          marks={{ '-255': -255, 0: 0, 255: 255 }}
+          onChange={setContrastBeta}
         />
         {isProcessingPreview ? <Spin /> : undefined}
       </ToolDrawer>

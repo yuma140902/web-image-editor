@@ -11,6 +11,7 @@ export type MenuBarProps = {
   handleBinarization: () => void;
   handleCanny: () => void;
   handleInvert: () => void;
+  handleContrast: () => void;
 };
 
 export default function MenuBar({
@@ -23,6 +24,7 @@ export default function MenuBar({
   handleBinarization,
   handleCanny,
   handleInvert,
+  handleContrast,
 }: MenuBarProps) {
   const handleMenuClick = async ({ key }: { key: string }) => {
     if (key === 'save') {
@@ -37,6 +39,8 @@ export default function MenuBar({
       handleCanny();
     } else if (key === 'invert') {
       handleInvert();
+    } else if (key === 'contrast') {
+      handleContrast();
     }
   };
 
@@ -86,6 +90,12 @@ export default function MenuBar({
         {
           label: '色を反転',
           key: 'invert',
+          disabled: !projectIsOpened,
+        },
+
+        {
+          label: 'コントラストと明るさ',
+          key: 'contrast',
           disabled: !projectIsOpened,
         },
       ],
