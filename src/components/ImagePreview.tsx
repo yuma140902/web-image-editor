@@ -32,11 +32,11 @@ export default function ImagePreview({
   const [offset, setOffset] = useState({ x: 0.0, y: 0.0 });
 
   const handleZoomIn = () => {
-    setScale(scale + 0.1);
+    setScale(scale * 1.1);
   };
 
   const handleZoomOut = () => {
-    setScale(scale - 0.1);
+    setScale(scale * 0.9);
   };
 
   const handleViewReset = () => {
