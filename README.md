@@ -6,7 +6,8 @@
 
 デプロイ先: <https://yuma140902.github.io/web-image-editor/>
 
-![Screenshot 2023-09-21 at 21-44-15 Vite React TS](https://github.com/yuma140902/web-image-editor/assets/23431077/f1106967-111e-4165-afd6-f6c73eae25fc)
+[![image](https://github.com/yuma140902/web-image-editor/assets/23431077/91b2e738-ec06-45e5-8049-36316663a491)](https://yuma140902.github.io/web-image-editor/)
+
 
 
 ## 機能
