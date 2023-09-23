@@ -1,4 +1,4 @@
-import { CloseOutlined, SaveOutlined } from '@ant-design/icons';
+import { SaveOutlined } from '@ant-design/icons';
 import { FloatButton, Tooltip } from 'antd';
 
 export type QuickMenuProps = {
