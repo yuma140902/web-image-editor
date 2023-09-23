@@ -269,8 +269,9 @@ function App() {
       <Drawer
         title="二値化"
         open={openBinarizationDrawer}
+        closable={false}
         onClose={() => {
-          disposePreview();
+          applyPreview();
           setOpenBinarizationDrawer(false);
         }}
         placement="right"
@@ -310,8 +311,9 @@ function App() {
       <Drawer
         title="エッジ検出 (Canny法)"
         open={openCannyDrawer}
+        closable={false}
         onClose={() => {
-          disposePreview();
+          applyPreview();
           setOpenCannyDrawer(false);
         }}
         placement="right"
