@@ -23,6 +23,7 @@ import MenuBar from './components/MenuBar';
 import appIcon from './icon.png';
 import githubLightIcon from './github-mark.svg';
 import githubDarkIcon from './github-mark-white.svg';
+import QuickMenu from './components/QuickMenu';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -251,6 +252,7 @@ function App() {
             </a>
           </Tooltip>
         </Header>
+        <QuickMenu handleSave={handleSave} />
         <Content>
           {!projectIsOpened() ? (
             <div style={{ padding: '2rem', height: '100%' }}>
