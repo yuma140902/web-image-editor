@@ -55,6 +55,10 @@ function App() {
   const [cannyThreshold1, setCannyThreshold1] = useState(100);
   const [cannyThreshold2, setCannyThreshold2] = useState(200);
 
+  const [openColoredCannyDrawer, setOpenColoredCannyDrawer] = useState(false);
+  const [coloredCannyThreshold1, setColoredCannyThreshold1] = useState(100);
+  const [coloredCannyThreshold2, setColoredCannyThreshold2] = useState(200);
+
   const [openContrastDrawer, setOpenContrastDrawer] = useState(false);
   const [contrastUseAlphaCh, setContrastUseAlphaCh] = useState(false);
   const [contrastAlpha, setContrastAlpha] = useState(1.0);
@@ -102,6 +106,11 @@ function App() {
     closeAllToolDrawers();
     setOpenCannyDrawer(!openCannyDrawer);
     return;
+  };
+
+  const handleColoredCanny = () => {
+    closeAllToolDrawers();
+    setOpenColoredCannyDrawer(!openColoredCannyDrawer);
   };
 
   const handleInvert = () => {
@@ -276,6 +285,64 @@ function App() {
     isProcessingPreview,
   ]);
 
+  useEffect(() => {
+    const convert = async (
+      input: cv.Mat,
+      threshold1: number,
+      threshold2: number,
+    ): Promise<cv.Mat> => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const output = new cv.Mat();
+          const edge = new cv.Mat();
+          cv.Canny(input, edge, threshold1, threshold2);
+          if (input.type() === cv.CV_8UC1) {
+            cv.bitwise_not(edge, output);
+          } else if (input.type() === cv.CV_8UC3) {
+            const edgeInv = new cv.Mat();
+            const edgeInvCh = new cv.Mat();
+            cv.bitwise_not(edge, edgeInv);
+            cv.cvtColor(edgeInv, edgeInvCh, cv.COLOR_GRAY2BGR);
+            cv.add(input, edgeInvCh, output);
+            edgeInvCh.delete();
+            edgeInv.delete();
+          } else if (input.type() === cv.CV_8UC4) {
+            const edgeInv = new cv.Mat();
+            const edgeInvCh = new cv.Mat();
+            cv.bitwise_not(edge, edgeInv);
+            cv.cvtColor(edgeInv, edgeInvCh, cv.COLOR_GRAY2BGRA);
+            cv.add(input, edgeInvCh, output);
+            edgeInvCh.delete();
+            edgeInv.delete();
+          }
+          edge.delete();
+          resolve(output);
+        }, 0);
+      });
+    };
+
+    if (openColoredCannyDrawer && !isProcessingPreview) {
+      setIsProcessingPreview(true);
+      if (project.mat) {
+        convert(
+          project.mat,
+          coloredCannyThreshold1,
+          coloredCannyThreshold2,
+        ).then((dst) => {
+          setIsProcessingPreview(false);
+          project.previewMat?.delete();
+          project.previewMat = undefined;
+          setProject({ ...project, previewMat: dst });
+        });
+      }
+    }
+  }, [
+    coloredCannyThreshold1,
+    coloredCannyThreshold2,
+    openColoredCannyDrawer,
+    isProcessingPreview,
+  ]);
+
   const disposePreview = () => {
     setIsProcessingPreview(false);
     setProject((p) => {
@@ -386,6 +453,7 @@ function App() {
             handleGrayscale={handleGrayscale}
             handleBinarization={handleBinarization}
             handleCanny={handleCanny}
+            handleColoredCanny={handleColoredCanny}
             handleInvert={handleInvert}
             handleContrast={handleContrast}
           />
@@ -494,6 +562,7 @@ function App() {
           }
         />
       </Modal>
+
       <ToolDrawer
         title="二値化"
         open={openBinarizationDrawer}
@@ -515,6 +584,7 @@ function App() {
         />
         <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
+
       <ToolDrawer
         title="エッジ検出 (Canny法)"
         open={openCannyDrawer}
@@ -543,6 +613,36 @@ function App() {
         />
         <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
+
+      <ToolDrawer
+        title="色付きエッジ検出 (Canny法)"
+        open={openColoredCannyDrawer}
+        handleCancel={() => {
+          disposePreview();
+          setOpenColoredCannyDrawer(false);
+        }}
+        handleConfirm={() => {
+          confirmPreview();
+          setOpenColoredCannyDrawer(false);
+        }}
+      >
+        <Typography>閾値1:</Typography>
+        <Slider
+          defaultValue={coloredCannyThreshold1}
+          max={255}
+          marks={{ 0: 0, 255: 255 }}
+          onAfterChange={setColoredCannyThreshold1}
+        />
+        <Typography>閾値2:</Typography>
+        <Slider
+          defaultValue={coloredCannyThreshold1}
+          max={255}
+          marks={{ 0: 0, 255: 255 }}
+          onAfterChange={setColoredCannyThreshold2}
+        />
+        <Spin spinning={isProcessingPreview} />
+      </ToolDrawer>
+
       <ToolDrawer
         title="コントラストと明るさ"
         open={openContrastDrawer}
@@ -557,7 +657,7 @@ function App() {
       >
         <Checkbox
           defaultChecked={contrastUseAlphaCh}
-          onAfterChange={(e: CheckboxChangeEvent) =>
+          onChange={(e: CheckboxChangeEvent) =>
             setContrastUseAlphaCh(e.target.checked)
           }
         >

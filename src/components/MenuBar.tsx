@@ -10,6 +10,7 @@ export type MenuBarProps = {
   handleGrayscale: () => void;
   handleBinarization: () => void;
   handleCanny: () => void;
+  handleColoredCanny: () => void;
   handleInvert: () => void;
   handleContrast: () => void;
 };
@@ -23,6 +24,7 @@ export default function MenuBar({
   handleGrayscale,
   handleBinarization,
   handleCanny,
+  handleColoredCanny,
   handleInvert,
   handleContrast,
 }: MenuBarProps) {
@@ -37,6 +39,8 @@ export default function MenuBar({
       handleBinarization();
     } else if (key === 'canny') {
       handleCanny();
+    } else if (key === 'colored_canny') {
+      handleColoredCanny();
     } else if (key === 'invert') {
       handleInvert();
     } else if (key === 'contrast') {
@@ -85,6 +89,11 @@ export default function MenuBar({
         {
           label: 'エッジ検出 (Canny法)',
           key: 'canny',
+          disabled: !projectIsOpened,
+        },
+        {
+          label: '色付きエッジ検出 (Canny法)',
+          key: 'colored_canny',
           disabled: !projectIsOpened,
         },
         {
