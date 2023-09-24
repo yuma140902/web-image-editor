@@ -511,7 +511,7 @@ function App() {
           defaultValue={binarizationThreshold}
           max={255}
           marks={{ 0: 0, 255: 255 }}
-          onChange={setBinarizationThreshold}
+          onAfterChange={setBinarizationThreshold}
         />
         <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
@@ -532,14 +532,14 @@ function App() {
           defaultValue={cannyThreshold1}
           max={255}
           marks={{ 0: 0, 255: 255 }}
-          onChange={setCannyThreshold1}
+          onAfterChange={setCannyThreshold1}
         />
         <Typography>閾値2:</Typography>
         <Slider
           defaultValue={cannyThreshold2}
           max={255}
           marks={{ 0: 0, 255: 255 }}
-          onChange={setCannyThreshold2}
+          onAfterChange={setCannyThreshold2}
         />
         <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
@@ -557,7 +557,7 @@ function App() {
       >
         <Checkbox
           defaultChecked={contrastUseAlphaCh}
-          onChange={(e: CheckboxChangeEvent) =>
+          onAfterChange={(e: CheckboxChangeEvent) =>
             setContrastUseAlphaCh(e.target.checked)
           }
         >
@@ -571,7 +571,7 @@ function App() {
           max={5}
           step={0.1}
           marks={{ 0: 0, 1: 1, 5: 5 }}
-          onChange={setContrastAlpha}
+          onAfterChange={setContrastAlpha}
         />
         <Typography>明るさ:</Typography>
         <Slider
@@ -579,7 +579,7 @@ function App() {
           min={-255}
           max={255}
           marks={{ '-255': -255, 0: 0, 255: 255 }}
-          onChange={setContrastBeta}
+          onAfterChange={setContrastBeta}
         />
         <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
