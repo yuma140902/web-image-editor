@@ -19,7 +19,7 @@ import { Content, Header } from 'antd/es/layout/layout';
 import cv from '@techstark/opencv-js';
 import useCvMatFromFile from './hooks/useCvMatFromFile';
 import { useWindowSize } from '@react-hook/window-size';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Project, renderProject } from './core/Project';
 import MenuBar from './components/MenuBar';
 import appIcon from './icon.png';
@@ -29,6 +29,8 @@ import QuickMenu from './components/QuickMenu';
 import { GithubFilled } from '@ant-design/icons';
 import ToolDrawer from './components/ToolDrawer';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
+
+type Tool = 'binarization' | 'canny' | 'colored_canny' | 'manga' | 'contrast';
 
 function App() {
   const [project, setProject] = useState<Project>({});
@@ -48,18 +50,16 @@ function App() {
 
   const [openAboutDialog, setOpenAboutDialog] = useState(false);
 
-  const [openBinarizationDrawer, setOpenBinarizationDrawer] = useState(false);
+  const [currentTool, setCurrentTool] = useState<Tool | undefined>(undefined);
+
   const [binarizationThreshold, setBinarizationThreshold] = useState(100);
 
-  const [openCannyDrawer, setOpenCannyDrawer] = useState(false);
   const [cannyThreshold1, setCannyThreshold1] = useState(100);
   const [cannyThreshold2, setCannyThreshold2] = useState(200);
 
-  const [openColoredCannyDrawer, setOpenColoredCannyDrawer] = useState(false);
   const [coloredCannyThreshold1, setColoredCannyThreshold1] = useState(100);
   const [coloredCannyThreshold2, setColoredCannyThreshold2] = useState(200);
 
-  const [openContrastDrawer, setOpenContrastDrawer] = useState(false);
   const [contrastUseAlphaCh, setContrastUseAlphaCh] = useState(false);
   const [contrastAlpha, setContrastAlpha] = useState(1.0);
   const [contrastBeta, setContrastBeta] = useState(0);
@@ -70,20 +70,116 @@ function App() {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const windowIsLandscape = (): boolean => windowWidth > windowHeight;
-
-  const anyToolDrawerIsOpen = (): boolean =>
-    openBinarizationDrawer || openCannyDrawer;
-
-  const closeAllToolDrawers = () => {
-    setOpenBinarizationDrawer(false);
-    setOpenCannyDrawer(false);
-  };
-
   useEffect(
     () => setProject((p) => ({ ...p, mat: mat, previewMat: undefined })),
     [mat],
   );
+
+  const windowIsLandscape = (): boolean => windowWidth > windowHeight;
+
+  const toolDrawerIsOpen = (): boolean => !!currentTool;
+  const closeToolDrawer = () => setCurrentTool(undefined);
+  const getToolName = (tool: Tool): string => {
+    switch (tool) {
+      case 'binarization':
+        return '二値化';
+      case 'canny':
+        return 'エッジ検出 (Canny法)';
+      case 'colored_canny':
+        return '色付きエッジ検出 (Canny法)';
+      case 'manga':
+        return '漫画風加工 (Canny法)';
+      case 'contrast':
+        return 'コントラストと明るさ';
+    }
+  };
+  const getToolComponent = (tool: Tool): ReactNode => {
+    switch (tool) {
+      case 'binarization':
+        return (
+          <>
+            <Typography>閾値:</Typography>
+            <Slider
+              defaultValue={binarizationThreshold}
+              max={255}
+              marks={{ 0: 0, 255: 255 }}
+              onAfterChange={setBinarizationThreshold}
+            />
+          </>
+        );
+      case 'canny':
+        return (
+          <>
+            <Typography>閾値1:</Typography>
+            <Slider
+              defaultValue={cannyThreshold1}
+              max={255}
+              marks={{ 0: 0, 255: 255 }}
+              onAfterChange={setCannyThreshold1}
+            />
+            <Typography>閾値2:</Typography>
+            <Slider
+              defaultValue={cannyThreshold2}
+              max={255}
+              marks={{ 0: 0, 255: 255 }}
+              onAfterChange={setCannyThreshold2}
+            />
+          </>
+        );
+      case 'colored_canny':
+        return (
+          <>
+            <Typography>閾値1:</Typography>
+            <Slider
+              defaultValue={coloredCannyThreshold1}
+              max={255}
+              marks={{ 0: 0, 255: 255 }}
+              onAfterChange={setColoredCannyThreshold1}
+            />
+            <Typography>閾値2:</Typography>
+            <Slider
+              defaultValue={coloredCannyThreshold1}
+              max={255}
+              marks={{ 0: 0, 255: 255 }}
+              onAfterChange={setColoredCannyThreshold2}
+            />
+          </>
+        );
+      case 'manga':
+        return <></>;
+      case 'contrast':
+        return (
+          <>
+            <Checkbox
+              defaultChecked={contrastUseAlphaCh}
+              onChange={(e: CheckboxChangeEvent) =>
+                setContrastUseAlphaCh(e.target.checked)
+              }
+            >
+              画像の透明度を考慮する
+              <wbr />
+              （処理が重いので非推奨）
+            </Checkbox>
+            <Typography>コントラスト:</Typography>
+            <Slider
+              defaultValue={contrastAlpha}
+              max={5}
+              step={0.1}
+              marks={{ 0: 0, 1: 1, 5: 5 }}
+              onAfterChange={setContrastAlpha}
+            />
+            <Typography>明るさ:</Typography>
+            <Slider
+              defaultValue={contrastBeta}
+              min={-255}
+              max={255}
+              marks={{ '-255': -255, 0: 0, 255: 255 }}
+              onAfterChange={setContrastBeta}
+            />
+          </>
+        );
+    }
+  };
 
   const handleGrayscale = () => {
     if (project.mat) {
@@ -97,20 +193,20 @@ function App() {
   };
 
   const handleBinarization = () => {
-    closeAllToolDrawers();
-    setOpenBinarizationDrawer(!openBinarizationDrawer);
+    closeToolDrawer();
+    setCurrentTool('binarization');
     return;
   };
 
   const handleCanny = () => {
-    closeAllToolDrawers();
-    setOpenCannyDrawer(!openCannyDrawer);
+    closeToolDrawer();
+    setCurrentTool('canny');
     return;
   };
 
   const handleColoredCanny = () => {
-    closeAllToolDrawers();
-    setOpenColoredCannyDrawer(!openColoredCannyDrawer);
+    closeToolDrawer();
+    setCurrentTool('colored_canny');
   };
 
   const handleInvert = () => {
@@ -153,8 +249,8 @@ function App() {
   };
 
   const handleContrast = () => {
-    closeAllToolDrawers();
-    setOpenContrastDrawer(!openContrastDrawer);
+    closeToolDrawer();
+    setCurrentTool('contrast');
   };
 
   useEffect(() => {
@@ -171,7 +267,7 @@ function App() {
       });
     };
 
-    if (openBinarizationDrawer && !isProcessingPreview) {
+    if (currentTool === 'binarization' && !isProcessingPreview) {
       setIsProcessingPreview(true);
       if (project.mat) {
         convert(project.mat, binarizationThreshold).then((dst) => {
@@ -182,7 +278,7 @@ function App() {
         });
       }
     }
-  }, [binarizationThreshold, openBinarizationDrawer, isProcessingPreview]);
+  }, [binarizationThreshold, currentTool, isProcessingPreview]);
 
   useEffect(() => {
     const convert = async (
@@ -199,7 +295,7 @@ function App() {
       });
     };
 
-    if (openCannyDrawer && !isProcessingPreview) {
+    if (currentTool === 'canny' && !isProcessingPreview) {
       setIsProcessingPreview(true);
       if (project.mat) {
         convert(project.mat, cannyThreshold1, cannyThreshold2).then((dst) => {
@@ -210,7 +306,65 @@ function App() {
         });
       }
     }
-  }, [cannyThreshold1, cannyThreshold2, openCannyDrawer, isProcessingPreview]);
+  }, [cannyThreshold1, cannyThreshold2, currentTool, isProcessingPreview]);
+
+  useEffect(() => {
+    const convert = async (
+      input: cv.Mat,
+      threshold1: number,
+      threshold2: number,
+    ): Promise<cv.Mat> => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const output = new cv.Mat();
+          const edge = new cv.Mat();
+          cv.Canny(input, edge, threshold1, threshold2);
+          if (input.type() === cv.CV_8UC1) {
+            cv.bitwise_not(edge, output);
+          } else if (input.type() === cv.CV_8UC3) {
+            const edgeInv = new cv.Mat();
+            const edgeInvCh = new cv.Mat();
+            cv.bitwise_not(edge, edgeInv);
+            cv.cvtColor(edgeInv, edgeInvCh, cv.COLOR_GRAY2BGR);
+            cv.add(input, edgeInvCh, output);
+            edgeInvCh.delete();
+            edgeInv.delete();
+          } else if (input.type() === cv.CV_8UC4) {
+            const edgeInv = new cv.Mat();
+            const edgeInvCh = new cv.Mat();
+            cv.bitwise_not(edge, edgeInv);
+            cv.cvtColor(edgeInv, edgeInvCh, cv.COLOR_GRAY2BGRA);
+            cv.add(input, edgeInvCh, output);
+            edgeInvCh.delete();
+            edgeInv.delete();
+          }
+          edge.delete();
+          resolve(output);
+        }, 0);
+      });
+    };
+
+    if (currentTool === 'colored_canny' && !isProcessingPreview) {
+      setIsProcessingPreview(true);
+      if (project.mat) {
+        convert(
+          project.mat,
+          coloredCannyThreshold1,
+          coloredCannyThreshold2,
+        ).then((dst) => {
+          setIsProcessingPreview(false);
+          project.previewMat?.delete();
+          project.previewMat = undefined;
+          setProject({ ...project, previewMat: dst });
+        });
+      }
+    }
+  }, [
+    coloredCannyThreshold1,
+    coloredCannyThreshold2,
+    currentTool,
+    isProcessingPreview,
+  ]);
 
   useEffect(() => {
     const convert = async (
@@ -266,7 +420,7 @@ function App() {
       });
     };
 
-    if (openContrastDrawer && !isProcessingPreview) {
+    if (currentTool === 'contrast' && !isProcessingPreview) {
       setIsProcessingPreview(true);
       if (project.mat) {
         convert(project.mat, contrastAlpha, contrastBeta).then((dst) => {
@@ -281,65 +435,7 @@ function App() {
     contrastUseAlphaCh,
     contrastAlpha,
     contrastBeta,
-    openContrastDrawer,
-    isProcessingPreview,
-  ]);
-
-  useEffect(() => {
-    const convert = async (
-      input: cv.Mat,
-      threshold1: number,
-      threshold2: number,
-    ): Promise<cv.Mat> => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const output = new cv.Mat();
-          const edge = new cv.Mat();
-          cv.Canny(input, edge, threshold1, threshold2);
-          if (input.type() === cv.CV_8UC1) {
-            cv.bitwise_not(edge, output);
-          } else if (input.type() === cv.CV_8UC3) {
-            const edgeInv = new cv.Mat();
-            const edgeInvCh = new cv.Mat();
-            cv.bitwise_not(edge, edgeInv);
-            cv.cvtColor(edgeInv, edgeInvCh, cv.COLOR_GRAY2BGR);
-            cv.add(input, edgeInvCh, output);
-            edgeInvCh.delete();
-            edgeInv.delete();
-          } else if (input.type() === cv.CV_8UC4) {
-            const edgeInv = new cv.Mat();
-            const edgeInvCh = new cv.Mat();
-            cv.bitwise_not(edge, edgeInv);
-            cv.cvtColor(edgeInv, edgeInvCh, cv.COLOR_GRAY2BGRA);
-            cv.add(input, edgeInvCh, output);
-            edgeInvCh.delete();
-            edgeInv.delete();
-          }
-          edge.delete();
-          resolve(output);
-        }, 0);
-      });
-    };
-
-    if (openColoredCannyDrawer && !isProcessingPreview) {
-      setIsProcessingPreview(true);
-      if (project.mat) {
-        convert(
-          project.mat,
-          coloredCannyThreshold1,
-          coloredCannyThreshold2,
-        ).then((dst) => {
-          setIsProcessingPreview(false);
-          project.previewMat?.delete();
-          project.previewMat = undefined;
-          setProject({ ...project, previewMat: dst });
-        });
-      }
-    }
-  }, [
-    coloredCannyThreshold1,
-    coloredCannyThreshold2,
-    openColoredCannyDrawer,
+    currentTool,
     isProcessingPreview,
   ]);
 
@@ -509,24 +605,18 @@ function App() {
                 project={project}
                 width={
                   windowWidth -
-                  (windowIsLandscape() && anyToolDrawerIsOpen()
-                    ? DRAWER_SIZE
-                    : 0)
+                  (windowIsLandscape() && toolDrawerIsOpen() ? DRAWER_SIZE : 0)
                 }
                 height={
                   windowHeight -
                   HEADER_HEIGHT -
-                  (!windowIsLandscape() && anyToolDrawerIsOpen()
-                    ? DRAWER_SIZE
-                    : 0)
+                  (!windowIsLandscape() && toolDrawerIsOpen() ? DRAWER_SIZE : 0)
                 }
                 rightOffset={
-                  windowIsLandscape() && anyToolDrawerIsOpen() ? DRAWER_SIZE : 0
+                  windowIsLandscape() && toolDrawerIsOpen() ? DRAWER_SIZE : 0
                 }
                 bottomOffset={
-                  !windowIsLandscape() && anyToolDrawerIsOpen()
-                    ? DRAWER_SIZE
-                    : 0
+                  !windowIsLandscape() && toolDrawerIsOpen() ? DRAWER_SIZE : 0
                 }
                 isDarkMode={isDarkMode}
               />
@@ -564,123 +654,18 @@ function App() {
       </Modal>
 
       <ToolDrawer
-        title="二値化"
-        open={openBinarizationDrawer}
+        title={currentTool ? getToolName(currentTool) : 'ツールなし'}
+        open={toolDrawerIsOpen()}
         handleCancel={() => {
           disposePreview();
-          setOpenBinarizationDrawer(false);
+          closeToolDrawer();
         }}
         handleConfirm={() => {
           confirmPreview();
-          setOpenBinarizationDrawer(false);
+          closeToolDrawer();
         }}
       >
-        <Typography>閾値:</Typography>
-        <Slider
-          defaultValue={binarizationThreshold}
-          max={255}
-          marks={{ 0: 0, 255: 255 }}
-          onAfterChange={setBinarizationThreshold}
-        />
-        <Spin spinning={isProcessingPreview} />
-      </ToolDrawer>
-
-      <ToolDrawer
-        title="エッジ検出 (Canny法)"
-        open={openCannyDrawer}
-        handleCancel={() => {
-          disposePreview();
-          setOpenCannyDrawer(false);
-        }}
-        handleConfirm={() => {
-          confirmPreview();
-          setOpenCannyDrawer(false);
-        }}
-      >
-        <Typography>閾値1:</Typography>
-        <Slider
-          defaultValue={cannyThreshold1}
-          max={255}
-          marks={{ 0: 0, 255: 255 }}
-          onAfterChange={setCannyThreshold1}
-        />
-        <Typography>閾値2:</Typography>
-        <Slider
-          defaultValue={cannyThreshold2}
-          max={255}
-          marks={{ 0: 0, 255: 255 }}
-          onAfterChange={setCannyThreshold2}
-        />
-        <Spin spinning={isProcessingPreview} />
-      </ToolDrawer>
-
-      <ToolDrawer
-        title="色付きエッジ検出 (Canny法)"
-        open={openColoredCannyDrawer}
-        handleCancel={() => {
-          disposePreview();
-          setOpenColoredCannyDrawer(false);
-        }}
-        handleConfirm={() => {
-          confirmPreview();
-          setOpenColoredCannyDrawer(false);
-        }}
-      >
-        <Typography>閾値1:</Typography>
-        <Slider
-          defaultValue={coloredCannyThreshold1}
-          max={255}
-          marks={{ 0: 0, 255: 255 }}
-          onAfterChange={setColoredCannyThreshold1}
-        />
-        <Typography>閾値2:</Typography>
-        <Slider
-          defaultValue={coloredCannyThreshold1}
-          max={255}
-          marks={{ 0: 0, 255: 255 }}
-          onAfterChange={setColoredCannyThreshold2}
-        />
-        <Spin spinning={isProcessingPreview} />
-      </ToolDrawer>
-
-      <ToolDrawer
-        title="コントラストと明るさ"
-        open={openContrastDrawer}
-        handleCancel={() => {
-          disposePreview();
-          setOpenContrastDrawer(false);
-        }}
-        handleConfirm={() => {
-          confirmPreview();
-          setOpenContrastDrawer(false);
-        }}
-      >
-        <Checkbox
-          defaultChecked={contrastUseAlphaCh}
-          onChange={(e: CheckboxChangeEvent) =>
-            setContrastUseAlphaCh(e.target.checked)
-          }
-        >
-          画像の透明度を考慮する
-          <wbr />
-          （処理が重いので非推奨）
-        </Checkbox>
-        <Typography>コントラスト:</Typography>
-        <Slider
-          defaultValue={contrastAlpha}
-          max={5}
-          step={0.1}
-          marks={{ 0: 0, 1: 1, 5: 5 }}
-          onAfterChange={setContrastAlpha}
-        />
-        <Typography>明るさ:</Typography>
-        <Slider
-          defaultValue={contrastBeta}
-          min={-255}
-          max={255}
-          marks={{ '-255': -255, 0: 0, 255: 255 }}
-          onAfterChange={setContrastBeta}
-        />
+        {currentTool ? getToolComponent(currentTool) : undefined}
         <Spin spinning={isProcessingPreview} />
       </ToolDrawer>
     </ConfigProvider>

@@ -11,6 +11,7 @@ export type MenuBarProps = {
   handleBinarization: () => void;
   handleCanny: () => void;
   handleColoredCanny: () => void;
+  handleManga: () => void;
   handleInvert: () => void;
   handleContrast: () => void;
 };
@@ -25,6 +26,7 @@ export default function MenuBar({
   handleBinarization,
   handleCanny,
   handleColoredCanny,
+  handleManga,
   handleInvert,
   handleContrast,
 }: MenuBarProps) {
@@ -41,6 +43,8 @@ export default function MenuBar({
       handleCanny();
     } else if (key === 'colored_canny') {
       handleColoredCanny();
+    } else if (key === 'manga') {
+      handleManga();
     } else if (key === 'invert') {
       handleInvert();
     } else if (key === 'contrast') {
@@ -94,6 +98,11 @@ export default function MenuBar({
         {
           label: '色付きエッジ検出 (Canny法)',
           key: 'colored_canny',
+          disabled: !projectIsOpened,
+        },
+        {
+          label: '漫画風加工 (Canny法)',
+          key: 'manga',
           disabled: !projectIsOpened,
         },
         {
