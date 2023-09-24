@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
 import * as child from 'child_process';
 
@@ -8,7 +9,51 @@ const branch = child.execSync('git rev-parse --abbrev-ref HEAD').toString();
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+      manifest: {
+        background_color: '#555555',
+        categories: ['graphics'],
+        display: 'fullscreen',
+        icons: [
+          {
+            src: '/web-image-editor/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/web-image-editor/icon-256x256.png',
+            sizes: '256x256',
+            type: 'image/png',
+          },
+          {
+            src: '/web-image-editor/icon-384x384.png',
+            sizes: '384x384',
+            type: 'image/png',
+          },
+          {
+            src: '/web-image-editor/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: '/web-image-editor/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+        ],
+        name: 'Web Image Editor',
+        orientation: 'any',
+        scope: '/',
+        short_name: 'Web Image Editor',
+        start_url: '/web-image-editor/',
+        theme_color: '#f69435',
+      },
+    }),
+  ],
   base: '/web-image-editor/',
   define: {
     __COMMIT_ID__: JSON.stringify(commitId.trim()),
