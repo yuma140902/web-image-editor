@@ -711,7 +711,12 @@ function App() {
           extra={
             <>
               <GithubFilled />
-              <Typography.Link>yuma140902/web-image-editor</Typography.Link>
+              <Typography.Link
+                href="https://github.com/yuma140902/web-image-editor"
+                target="_blank"
+              >
+                yuma140902/web-image-editor
+              </Typography.Link>
               <br />
               <Typography.Text type="secondary">作者: yuma14</Typography.Text>
               <br />
