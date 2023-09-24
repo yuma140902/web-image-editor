@@ -22,7 +22,7 @@ import { useWindowSize } from '@react-hook/window-size';
 import { ReactNode, useEffect, useState } from 'react';
 import { Project, renderProject } from './core/Project';
 import MenuBar from './components/MenuBar';
-import appIcon from './icon.png';
+import appIcon from '/icon-512×512.png';
 import githubLightIcon from './github-mark.svg';
 import githubDarkIcon from './github-mark-white.svg';
 import QuickMenu from './components/QuickMenu';
@@ -704,7 +704,9 @@ function App() {
         }
       >
         <Result
-          icon={<img src={appIcon} />}
+          icon={
+            <img src={appIcon} style={{ maxWidth: '100%', height: 'auto' }} />
+          }
           title="Web Image Editor"
           extra={
             <>
