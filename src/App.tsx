@@ -60,6 +60,9 @@ function App() {
   const [coloredCannyThreshold1, setColoredCannyThreshold1] = useState(100);
   const [coloredCannyThreshold2, setColoredCannyThreshold2] = useState(200);
 
+  const [mangaThreshold1, setMangaThreshold1] = useState(100);
+  const [mangaThreshold2, setMangaThreshold2] = useState(200);
+
   const [contrastUseAlphaCh, setContrastUseAlphaCh] = useState(false);
   const [contrastAlpha, setContrastAlpha] = useState(1.0);
   const [contrastBeta, setContrastBeta] = useState(0);
@@ -146,7 +149,24 @@ function App() {
           </>
         );
       case 'manga':
-        return <></>;
+        return (
+          <>
+            <Typography>閾値1:</Typography>
+            <Slider
+              defaultValue={mangaThreshold1}
+              max={255}
+              marks={{ 0: 0, 255: 255 }}
+              onAfterChange={setMangaThreshold1}
+            />
+            <Typography>閾値2:</Typography>
+            <Slider
+              defaultValue={mangaThreshold2}
+              max={255}
+              marks={{ 0: 0, 255: 255 }}
+              onAfterChange={setMangaThreshold2}
+            />
+          </>
+        );
       case 'contrast':
         return (
           <>
@@ -193,20 +213,21 @@ function App() {
   };
 
   const handleBinarization = () => {
-    closeToolDrawer();
     setCurrentTool('binarization');
     return;
   };
 
   const handleCanny = () => {
-    closeToolDrawer();
     setCurrentTool('canny');
     return;
   };
 
   const handleColoredCanny = () => {
-    closeToolDrawer();
     setCurrentTool('colored_canny');
+  };
+
+  const handleManga = () => {
+    setCurrentTool('manga');
   };
 
   const handleInvert = () => {
@@ -365,6 +386,52 @@ function App() {
     currentTool,
     isProcessingPreview,
   ]);
+
+  useEffect(() => {
+    const convert = async (
+      input: cv.Mat,
+      threshold1: number,
+      threshold2: number,
+    ): Promise<cv.Mat> => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const output = new cv.Mat();
+          const edge = new cv.Mat();
+          cv.Canny(input, edge, threshold1, threshold2);
+          if (input.type() === cv.CV_8UC1) {
+            cv.subtract(input, edge, output);
+          } else if (input.type() === cv.CV_8UC3) {
+            const edgeCh = new cv.Mat();
+            cv.cvtColor(edge, edgeCh, cv.COLOR_GRAY2BGR);
+            cv.subtract(input, edgeCh, output);
+            edgeCh.delete();
+          } else if (input.type() === cv.CV_8UC4) {
+            const edgeCh = new cv.Mat();
+            const input3Ch = new cv.Mat();
+            cv.cvtColor(edge, edgeCh, cv.COLOR_GRAY2BGR);
+            cv.cvtColor(input, input3Ch, cv.COLOR_BGRA2BGR);
+            cv.subtract(input3Ch, edgeCh, output);
+            input3Ch.delete();
+            edgeCh.delete();
+          }
+          edge.delete();
+          resolve(output);
+        }, 0);
+      });
+    };
+
+    if (currentTool === 'manga' && !isProcessingPreview) {
+      setIsProcessingPreview(true);
+      if (project.mat) {
+        convert(project.mat, mangaThreshold1, mangaThreshold2).then((dst) => {
+          setIsProcessingPreview(false);
+          project.previewMat?.delete();
+          project.previewMat = undefined;
+          setProject({ ...project, previewMat: dst });
+        });
+      }
+    }
+  }, [mangaThreshold1, mangaThreshold2, currentTool, isProcessingPreview]);
 
   useEffect(() => {
     const convert = async (
@@ -550,6 +617,7 @@ function App() {
             handleBinarization={handleBinarization}
             handleCanny={handleCanny}
             handleColoredCanny={handleColoredCanny}
+            handleManga={handleManga}
             handleInvert={handleInvert}
             handleContrast={handleContrast}
           />
