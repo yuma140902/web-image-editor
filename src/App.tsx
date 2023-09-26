@@ -723,6 +723,8 @@ function App() {
                 すべての処理はブラウザ内で行われるため、
                 <wbr />
                 画像が外部に送信されることはありません。
+                <br />
+                オフラインでも利用可能です。
               </Typography.Paragraph>
               <GithubFilled />
               <Typography.Link
