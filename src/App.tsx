@@ -141,7 +141,7 @@ function App() {
             />
             <Typography>閾値2:</Typography>
             <Slider
-              defaultValue={coloredCannyThreshold1}
+              defaultValue={coloredCannyThreshold2}
               max={255}
               marks={{ 0: 0, 255: 255 }}
               onAfterChange={setColoredCannyThreshold2}
