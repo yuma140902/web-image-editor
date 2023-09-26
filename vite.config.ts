@@ -55,6 +55,15 @@ export default defineConfig({
     }),
   ],
   base: '/web-image-editor/',
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
+      },
+    },
+  },
   define: {
     __COMMIT_ID__: JSON.stringify(commitId.trim()),
     __GIT_BRANCH__: JSON.stringify(branch.trim()),
