@@ -710,6 +710,20 @@ function App() {
           title="Web Image Editor"
           extra={
             <>
+              <Typography.Paragraph
+                type="secondary"
+                style={{
+                  wordBreak: 'keep-all',
+                  width: '100%',
+                  textAlign: 'center',
+                }}
+              >
+                ブラウザ上で画像を編集するアプリです。
+                <wbr />
+                すべての処理はブラウザ内で行われるため、
+                <wbr />
+                画像が外部に送信されることはありません。
+              </Typography.Paragraph>
               <GithubFilled />
               <Typography.Link
                 href="https://github.com/yuma140902/web-image-editor"
