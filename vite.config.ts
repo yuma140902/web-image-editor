@@ -13,6 +13,12 @@ export default defineConfig({
     react(),
     VitePWA({
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+      registerType: 'prompt',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        maximumFileSizeToCacheInBytes: 12 * 1024 * 1024,
+      },
+      strategies: 'generateSW',
       manifest: {
         background_color: '#555555',
         categories: ['graphics'],
