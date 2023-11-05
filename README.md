@@ -4,7 +4,7 @@
 
 ブラウザ上で動作する画像エディタです。
 
-デプロイ先: <https://yuma140902.github.io/web-image-editor/>
+デプロイ先: <https://yuma14.net/web-image-editor/>
 
 [![image](https://github.com/yuma140902/web-image-editor/assets/23431077/91b2e738-ec06-45e5-8049-36316663a491)](https://yuma140902.github.io/web-image-editor/) [^1]
 
