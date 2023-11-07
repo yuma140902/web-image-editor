@@ -49,6 +49,8 @@ export default function MenuBar({
       handleInvert();
     } else if (key === 'contrast') {
       handleContrast();
+    } else if (key === 'apps') {
+      window.open('https://yuma14.net/apps/', '_blank');
     }
   };
 
@@ -110,7 +112,6 @@ export default function MenuBar({
           key: 'invert',
           disabled: !projectIsOpened,
         },
-
         {
           label: 'コントラストと明るさ',
           key: 'contrast',
@@ -118,10 +119,15 @@ export default function MenuBar({
         },
       ],
     },
+    {
+      label: 'アプリ一覧',
+      key: 'apps',
+    },
   ];
 
   return (
     <Menu
+      style={{ width: 'auto', maxWidth: '50vw' }}
       items={menuItems}
       mode="horizontal"
       selectable={false}

@@ -602,7 +602,7 @@ function App() {
           </a>
           <a href="#" role="button" onClick={handleOpenAboutDialog}>
             <Space>
-              <Typography.Text hidden={windowWidth < 500} strong>
+              <Typography.Text hidden={windowWidth < 600} strong>
                 Web Image Editor
               </Typography.Text>
             </Space>
