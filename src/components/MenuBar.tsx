@@ -1,4 +1,4 @@
-import { DeleteOutlined, SaveOutlined } from '@ant-design/icons';
+import { DeleteOutlined, MenuOutlined, SaveOutlined } from '@ant-design/icons';
 import { Badge, Menu, MenuProps } from 'antd';
 
 export type MenuBarProps = {
@@ -128,6 +128,7 @@ export default function MenuBar({
   return (
     <Menu
       style={{ width: 'auto', maxWidth: '50vw' }}
+      overflowedIndicator={<MenuOutlined />}
       items={menuItems}
       mode="horizontal"
       selectable={false}
