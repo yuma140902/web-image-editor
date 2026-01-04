@@ -1,5 +1,6 @@
-import ImageSelector from './components/ImageSelector';
-import ImagePreview from './components/ImagePreview';
+import { GithubFilled } from '@ant-design/icons';
+import { useWindowSize } from '@react-hook/window-size';
+import cv from '@techstark/opencv-js';
 import {
   Button,
   Checkbox,
@@ -15,20 +16,19 @@ import {
   Typography,
   theme,
 } from 'antd';
+import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { Content, Header } from 'antd/es/layout/layout';
-import cv from '@techstark/opencv-js';
-import useCvMatFromFile from './hooks/useCvMatFromFile';
-import { useWindowSize } from '@react-hook/window-size';
-import { ReactNode, useEffect, useState } from 'react';
-import { Project, renderProject } from './core/Project';
-import MenuBar from './components/MenuBar';
+import { type ReactNode, useEffect, useState } from 'react';
 import appIcon from '/icon-512x512.png';
-import githubLightIcon from './github-mark.svg';
-import githubDarkIcon from './github-mark-white.svg';
+import ImagePreview from './components/ImagePreview';
+import ImageSelector from './components/ImageSelector';
+import MenuBar from './components/MenuBar';
 import QuickMenu from './components/QuickMenu';
-import { GithubFilled } from '@ant-design/icons';
 import ToolDrawer from './components/ToolDrawer';
-import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { type Project, renderProject } from './core/Project';
+import githubDarkIcon from './github-mark-white.svg';
+import githubLightIcon from './github-mark.svg';
+import useCvMatFromFile from './hooks/useCvMatFromFile';
 
 type Tool = 'binarization' | 'canny' | 'colored_canny' | 'manga' | 'contrast';
 
@@ -75,7 +75,7 @@ function App() {
 
   useEffect(
     () => setProject((p) => ({ ...p, mat: mat, previewMat: undefined })),
-    [mat],
+    [mat]
   );
 
   const windowIsLandscape = (): boolean => windowWidth > windowHeight;
@@ -277,7 +277,7 @@ function App() {
   useEffect(() => {
     const convert = async (
       input: cv.Mat,
-      threshold: number,
+      threshold: number
     ): Promise<cv.Mat> => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -305,7 +305,7 @@ function App() {
     const convert = async (
       input: cv.Mat,
       threshold1: number,
-      threshold2: number,
+      threshold2: number
     ): Promise<cv.Mat> => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -333,7 +333,7 @@ function App() {
     const convert = async (
       input: cv.Mat,
       threshold1: number,
-      threshold2: number,
+      threshold2: number
     ): Promise<cv.Mat> => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -371,7 +371,7 @@ function App() {
         convert(
           project.mat,
           coloredCannyThreshold1,
-          coloredCannyThreshold2,
+          coloredCannyThreshold2
         ).then((dst) => {
           setIsProcessingPreview(false);
           project.previewMat?.delete();
@@ -391,7 +391,7 @@ function App() {
     const convert = async (
       input: cv.Mat,
       threshold1: number,
-      threshold2: number,
+      threshold2: number
     ): Promise<cv.Mat> => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -437,7 +437,7 @@ function App() {
     const convert = async (
       input: cv.Mat,
       alpha: number,
-      beta: number,
+      beta: number
     ): Promise<cv.Mat> => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -636,6 +636,7 @@ function App() {
             <a
               href="https://github.com/yuma140902/web-image-editor"
               target="_blank"
+              rel="noreferrer"
             >
               <div
                 style={{

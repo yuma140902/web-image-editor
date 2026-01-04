@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import cv from '@techstark/opencv-js';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /*
  * Fileの内容をcv.Matに読み込むフック

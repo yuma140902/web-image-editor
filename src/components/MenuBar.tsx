@@ -1,5 +1,5 @@
 import { DeleteOutlined, MenuOutlined, SaveOutlined } from '@ant-design/icons';
-import { Badge, Menu, MenuProps } from 'antd';
+import { Badge, Menu, type MenuProps } from 'antd';
 
 export type MenuBarProps = {
   projectIsOpened: boolean;

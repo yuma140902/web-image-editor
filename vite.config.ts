@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import topLevelAwait from 'vite-plugin-top-level-await';
-import { visualizer } from 'rollup-plugin-visualizer';
 
 import * as child from 'child_process';
 

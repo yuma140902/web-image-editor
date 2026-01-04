@@ -1,11 +1,11 @@
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { FloatButton, Spin, Tooltip } from 'antd';
+import type Konva from 'konva';
+import { useState } from 'react';
 import { Layer, Stage } from 'react-konva';
 import { Image } from 'react-konva';
+import type { Project } from '../core/Project';
 import useImageBitmapFromCvMat from '../hooks/useImageBitmapFromCvMat';
-import { Project } from '../core/Project';
-import { FloatButton, Spin, Tooltip } from 'antd';
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { useState } from 'react';
-import Konva from 'konva';
 
 export type ImagePreviewProps = {
   project: Project;
@@ -28,7 +28,7 @@ export default function ImagePreview({
   isDarkMode,
 }: ImagePreviewProps) {
   const imageBitmap = useImageBitmapFromCvMat(
-    project.previewMat ?? project.mat,
+    project.previewMat ?? project.mat
   );
   const [scale, setScale] = useState(1.0);
   const [isDragging, setIsDragging] = useState(false);

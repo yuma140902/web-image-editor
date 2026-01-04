@@ -1,4 +1,4 @@
-import cv from '@techstark/opencv-js';
+import type cv from '@techstark/opencv-js';
 import Konva from 'konva';
 import { CvMatToImageBitmap } from '../utils/ConvertImage';
 
