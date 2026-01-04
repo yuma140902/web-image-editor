@@ -1,5 +1,5 @@
 import { FileImageOutlined } from '@ant-design/icons';
-import { RcFile } from 'antd/es/upload';
+import type { RcFile } from 'antd/es/upload';
 import Dragger from 'antd/es/upload/Dragger';
 
 export type ImageSelectorProps = {
