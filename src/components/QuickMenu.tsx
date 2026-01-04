@@ -11,7 +11,7 @@ export default function QuickMenu({
   hasUnsavedChanges,
 }: QuickMenuProps) {
   return (
-    <FloatButton.Group style={{ top: 100, left: 24 }}>
+    <FloatButton.Group style={{ top: 100, left: 24, right: 'auto', bottom: 'auto', position: 'fixed' }}>
       <Tooltip title="保存" placement="right">
         <Badge dot={hasUnsavedChanges}>
           <FloatButton icon={<SaveOutlined />} onClick={handleSave} />
