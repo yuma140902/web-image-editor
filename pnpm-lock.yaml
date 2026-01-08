@@ -21,8 +21,8 @@ importers:
         specifier: ^5.9.2
         version: 5.29.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       konva:
-        specifier: ^9.2.1
-        version: 9.3.22
+        specifier: ^10.0.0
+        version: 10.0.12
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -31,7 +31,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-konva:
         specifier: ^18.2.10
-        version: 18.2.14(@types/react@18.3.27)(konva@9.3.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 18.2.14(@types/react@18.3.27)(konva@10.0.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -1760,8 +1760,8 @@ packages:
     resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
     engines: {node: '>=0.10.0'}
 
-  konva@9.3.22:
-    resolution: {integrity: sha512-yQI5d1bmELlD/fowuyfOp9ff+oamg26WOCkyqUyc+nczD/lhRa3EvD2MZOoc4c1293TAubW9n34fSQLgSeEgSw==}
+  konva@10.0.12:
+    resolution: {integrity: sha512-DHmkeG5FbW6tLCkbMQTi1ihWycfzljrn0V7umUUuewxx7aoINcI71ksgBX9fTPNXhlsK4/JoMgKwI/iCde+BRw==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -4462,7 +4462,7 @@ snapshots:
 
   jsonpointer@5.0.1: {}
 
-  konva@9.3.22: {}
+  konva@10.0.12: {}
 
   leven@3.1.0: {}
 
@@ -4891,11 +4891,11 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-konva@18.2.14(@types/react@18.3.27)(konva@9.3.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-konva@18.2.14(@types/react@18.3.27)(konva@10.0.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@types/react-reconciler': 0.28.9(@types/react@18.3.27)
       its-fine: 1.2.5(@types/react@18.3.27)(react@18.3.1)
-      konva: 9.3.22
+      konva: 10.0.12
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-reconciler: 0.29.2(react@18.3.1)
