@@ -18,14 +18,14 @@
     "antd": "^5.9.2",
     "konva": "^9.2.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.0.0",
     "react-konva": "^18.2.10"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/node": "^25.0.3",
     "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
+    "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.2.0",
     "rollup-plugin-visualizer": "^6.0.5",
     "typescript": "^5.0.2",
